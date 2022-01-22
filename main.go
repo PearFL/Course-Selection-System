@@ -1,6 +1,7 @@
 package main
 
 import (
+	"course_select/src/database"
 	"course_select/src/server"
 
 	"github.com/gin-gonic/gin"
@@ -8,6 +9,11 @@ import (
 
 func main() {
 	// fmt.Println("Hello World")
+
+	defer func() {
+		database.MySqlDb.Close()
+	}()
 	httpServer := gin.Default()
 	server.Run(httpServer)
+
 }

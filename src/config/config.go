@@ -10,16 +10,23 @@ import (
 	"gopkg.in/ini.v1"
 )
 
-type DbInfo struct {
-	TYPE     string
-	USER     string
-	PASSWORD string
-	DB_HOST  string
-	NAME     string
+type MySQLInfo struct {
+	TYPE         string
+	USER         string
+	PASSWORD     string
+	DB_HOST      string
+	DB_PORT      string
+	DB_NAME      string
+	CHARSET      string
+	ParseTime    string
+	MaxIdleConns int
+	MaxOpenConns int
 }
 
 type ServerInfo struct {
 	HTTP_PORT string
+	HTTP_HOST string
+	MODE      string
 }
 
 func GetServerConfig() *ServerInfo {
@@ -33,14 +40,14 @@ func GetServerConfig() *ServerInfo {
 	return d
 }
 
-func GetDbConfig() *DbInfo {
+func GetMySQLConfig() *MySQLInfo {
 	cfg, err := ini.Load("configFile/config.ini")
 	if err != nil {
 		log.Printf("Fail to read file: %v \n", err)
 		os.Exit(1)
 	}
-	d := new(DbInfo)
-	_ = cfg.Section("database").MapTo(d)
+	d := new(MySQLInfo)
+	_ = cfg.Section("mysql").MapTo(d)
 	return d
 }
 
