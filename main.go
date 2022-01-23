@@ -12,7 +12,9 @@ func main() {
 
 	defer func() {
 		database.MySqlDb.Close()
+		database.RedisClient.Close()
 	}()
+
 	httpServer := gin.Default()
 	server.Run(httpServer)
 

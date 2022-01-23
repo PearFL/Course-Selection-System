@@ -29,6 +29,14 @@ type ServerInfo struct {
 	MODE      string
 }
 
+type RedisInfo struct {
+	Redis_Host string
+	Type       string
+	MaxIdle    int
+	MaxActive  int
+	TimeOut    int
+}
+
 func GetServerConfig() *ServerInfo {
 	cfg, err := ini.Load("configFile/config.ini")
 	if err != nil {
@@ -48,6 +56,17 @@ func GetMySQLConfig() *MySQLInfo {
 	}
 	d := new(MySQLInfo)
 	_ = cfg.Section("mysql").MapTo(d)
+	return d
+}
+
+func GetRedisConfig() *RedisInfo {
+	cfg, err := ini.Load("configFile/config.ini")
+	if err != nil {
+		log.Printf("Fail to read file: %v \n", err)
+		os.Exit(1)
+	}
+	d := new(RedisInfo)
+	_ = cfg.Section("redis").MapTo(d)
 	return d
 }
 
