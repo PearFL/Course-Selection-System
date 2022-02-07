@@ -23,8 +23,8 @@ DROP TABLE IF EXISTS `bind`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `bind` (
-  `teacher_id` int unsigned NOT NULL,
-  `course_id` int unsigned NOT NULL,
+  `teacher_id` varchar(255) NOT NULL,
+  `course_id` varchar(255) NOT NULL,
   PRIMARY KEY (`teacher_id`,`course_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -46,8 +46,8 @@ DROP TABLE IF EXISTS `choice`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `choice` (
-  `student_id` int unsigned NOT NULL,
-  `course_id` int unsigned NOT NULL,
+  `student_id` varchar(255) NOT NULL,
+  `course_id` varchar(255) NOT NULL,
   PRIMARY KEY (`student_id`,`course_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -69,10 +69,11 @@ DROP TABLE IF EXISTS `course`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `course` (
-  `course_id` int NOT NULL AUTO_INCREMENT,
-  `teacher_id` int DEFAULT NULL,
+  `course_id` varchar(255) NOT NULL,
+  `teacher_id` varchar(255) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   `capacity` int DEFAULT NULL,
+  `cap_selected` int DEFAULT NULL,
   PRIMARY KEY (`course_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -83,6 +84,7 @@ CREATE TABLE `course` (
 
 LOCK TABLES `course` WRITE;
 /*!40000 ALTER TABLE `course` DISABLE KEYS */;
+INSERT INTO `course` VALUES ('0ae16eff-f791-4872-8a1d-dd614f3e541e','9eb72094-69ab-4407-9caf-6b39b657704f','线性代数',20,0),('130b494c-3f3f-41df-9cc0-c53baa6b5a47','1bd82c07-71ee-4dc0-bc7b-36d4638eaaa5','高等数学',30,0),('3db62ab9-840d-496c-9fcb-ebccb7442a0f','9057eee5-f1ba-4ff7-a9a4-ceec62a0ca1d','低等数学',30,0),('74d65040-a2c8-4ad9-ad7c-f204c1cce158','e982ba88-e858-47ca-8a65-3263e73119b6','复变函数',120,0),('c9c088a9-2337-4f8e-bbe0-57f5437c56cd','ee33e324-3ec4-42fd-9e0f-3a79323a7768','信号系统',20,0),('d45a8627-f0f3-432c-8270-3d592efc47f8','89180547-a847-4541-95b1-2aa703d482e9','中等数学',20,0);
 /*!40000 ALTER TABLE `course` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -94,7 +96,7 @@ DROP TABLE IF EXISTS `member`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `member` (
-  `user_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` varchar(255) NOT NULL,
   `nickname` varchar(255) DEFAULT NULL,
   `username` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
@@ -109,6 +111,7 @@ CREATE TABLE `member` (
 
 LOCK TABLES `member` WRITE;
 /*!40000 ALTER TABLE `member` DISABLE KEYS */;
+INSERT INTO `member` VALUES ('1bd82c07-71ee-4dc0-bc7b-36d4638eaaa5','yeye','hulu','fdf44dd58209f4f21104e92b850886ae',2),('2a4a0b95-dd0e-41eb-b56b-b3d5d50e539e','Alice','Alice','25d55ad283aa400af464c76d713c07ad',3),('81a47efe-65cd-4f1b-a789-68a538d1c39a','JudgeAdmin','JudgeAdmin','3f83fdd7e989c398ea157c58e3241dcd',1),('89180547-a847-4541-95b1-2aa703d482e9','icu','ui','5967ee71b80c6e3761b5414fd5b22dd7',2),('9057eee5-f1ba-4ff7-a9a4-ceec62a0ca1d','twt','twt','2ba38c72f45a830f2b8243a3a22236dd',2),('9eb72094-69ab-4407-9caf-6b39b657704f','wz','wz','36eed342177e32c235203aca93accde3',2),('e3551ad5-196d-42f7-8326-3687abda5f28','Tom','Tom','ddb14e5d1f19779c276e8d7b89ebd103',3),('e982ba88-e858-47ca-8a65-3263e73119b6','Bob','Bob','25d55ad283aa400af464c76d713c07ad',2),('ee33e324-3ec4-42fd-9e0f-3a79323a7768','mxh','mxh','4c3e4195b649599434c7ee3f1ed0d8d9',2);
 /*!40000 ALTER TABLE `member` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -121,4 +124,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-02-07  0:58:34
+-- Dump completed on 2022-02-08  0:54:39
