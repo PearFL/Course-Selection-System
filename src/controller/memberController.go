@@ -1,7 +1,10 @@
 package controller
 
 import (
+	"course_select/src/database"
 	global "course_select/src/global"
+	"course_select/src/model"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -14,15 +17,18 @@ import (
 */
 
 func CreateMember(c *gin.Context) {
-	// 用于接受请求参数
+	// 用于定义接受哪些请求的参数
 	createMemberRequest := global.CreateMemberRequest{}
 
 	// memberModel := model.Member{}
 
+	// 用于定义获取参数值
 	if err := c.ShouldBind(&createMemberRequest); err != nil {
 		c.JSON(http.StatusOK, global.CreateMemberResponse{Code: global.UnknownError})
 		return
 	}
+
+	fmt.Println(createMemberRequest)
 
 	//TODO:这里用中间件检验参数是否符合要求
 
@@ -57,7 +63,20 @@ func CreateMember(c *gin.Context) {
 }
 
 func GetMember(c *gin.Context) {
+	// 用于定义接受哪些请求的参数
+	getMemberRequest := global.GetMemberRequest{}
 
+	// 用于定义获取参数值
+	if err := c.ShouldBind(&getMemberRequest); err != nil {
+		c.JSON(http.StatusOK, global.CreateMemberResponse{Code: global.UnknownError})
+		return
+	}
+
+	fmt.Println(getMemberRequest)
+
+	result := database.MySqlDb.First(&model.Member{}, "user_id = ?", getMemberRequest.UserID)
+
+	fmt.Println(result.Value)
 }
 
 func GetMemberList(c *gin.Context) {
