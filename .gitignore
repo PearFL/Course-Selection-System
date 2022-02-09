@@ -16,3 +16,6 @@ doc.md
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+.idea
+# generated files ( goland connect mysql)
