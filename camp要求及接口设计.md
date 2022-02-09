@@ -123,14 +123,6 @@ SQL密码：
 | 抢课         | 学生抢课                    | POST /student/book_course |
 | 获取学生课表 | GET /student/course         |                           |
 
-
-
-#### 1.4 得分标准
-
-![image-20220207163731734](C:\Users\pearfl\AppData\Roaming\Typora\typora-user-images\image-20220207163731734.png)
-
-
-
 ### 2 types.go信息
 
 ```go
