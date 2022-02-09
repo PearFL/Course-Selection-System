@@ -30,11 +30,7 @@
   * TeacherID,类型int，作为外键参考Member表的UserID
   * CourseID,类型int，作为外键参考Course表的CourseID
 
-<<<<<<< HEAD
   表示一个教师到一个课程的绑定，以TeacherID作为主键，参考Member表的UserID,CourseID参考Course表的CourseID，一个老师只能绑定一门课程，一门课程只能由一个老师绑定
-=======
-  bind表的记录表示某老师可以上某门课，一个老师能上不同的课，一个课能被不同老师上
->>>>>>> pre
 
 * Choice表，$Choice(\underline{StudentID},\underline{CourseID})$
 

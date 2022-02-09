@@ -29,3 +29,7 @@ func (member *Member) BeforeCreate(scope *gorm.Scope) error {
 // 	h.Write([]byte(str))
 // 	return hex.EncodeToString(h.Sum(nil))
 // }
+
+func (model *Member) CreateMember(newMember Member) (string, error) {
+	return "不知道", nil
+}
