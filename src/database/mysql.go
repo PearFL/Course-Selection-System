@@ -39,5 +39,4 @@ func init() {
 	if MySqlError != nil {
 		panic("database open error! " + MySqlError.Error())
 	}
-
 }

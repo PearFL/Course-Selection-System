@@ -13,11 +13,11 @@ func RegisterRouter(r *gin.Engine) {
 	g.GET("/ping", controller.Ping)
 
 	// 成员管理
-	g.POST("/member/create")
-	g.GET("/member")
-	g.GET("/member/list")
-	g.POST("/member/update")
-	g.POST("/member/delete")
+	g.POST("/member/create", controller.CreateMember)
+	g.GET("/member", controller.GetMember)
+	g.GET("/member/list", controller.GetMemberList)
+	g.POST("/member/update", controller.UpdateMember)
+	g.POST("/member/delete", controller.DeleteMember)
 
 	// 登录
 

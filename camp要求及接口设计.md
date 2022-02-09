@@ -566,7 +566,8 @@ UserType:1
 
 ```json
 {
-    "Code": 0
+    "Code": 0,
+    "UserID": "a6659530-1fcc-45c3-935a-33575b798aa9"
 }
 ```
 
