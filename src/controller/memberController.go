@@ -5,9 +5,8 @@ import (
 	global "course_select/src/global"
 	"course_select/src/model"
 	"fmt"
-	"net/http"
-
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 /*
@@ -76,7 +75,20 @@ func GetMember(c *gin.Context) {
 
 	result := database.MySqlDb.First(&model.Member{}, "user_id = ?", getMemberRequest.UserID)
 
+	fmt.Printf("%T\n", result.Value)
 	fmt.Println(result.Value)
+	// fmt.Println(result.Value.UserID)
+
+	/*obj := reflect.ValueOf(result)
+
+	elem := obj.Elem()
+
+	if elem.Kind() == reflect.Struct {
+		elem.FieldByName("Userid")
+	}
+
+	fmt.Println(getMemberRequest.UserID)*/
+
 }
 
 func GetMemberList(c *gin.Context) {

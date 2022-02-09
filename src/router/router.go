@@ -20,7 +20,6 @@ func RegisterRouter(r *gin.Engine) {
 	g.POST("/member/delete", controller.DeleteMember)
 
 	// 登录
-
 	g.POST("/auth/login")
 	g.POST("/auth/logout")
 	g.GET("/auth/whoami")
