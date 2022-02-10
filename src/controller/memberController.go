@@ -90,20 +90,15 @@ func GetMemberList(c *gin.Context) {
 		return
 	}
 
+	offset, limit := GetMemberListRequest.Offset, GetMemberListRequest.Limit
+
 	// 查询并取出结果
-	members, err := memberModel.GetAllMembers()
+	members, err := memberModel.GetAllMembers(offset, limit)
 	if err != nil {
 		c.JSON(http.StatusOK, global.GetMemberListResponse{Code: global.UnknownError})
 		return
 	}
 
-	//判断参数是否合法
-	offset, limit := GetMemberListRequest.Offset, GetMemberListRequest.Limit
-	if offset < 0 || offset > len(members) || limit < 0 || offset+limit > len(members) {
-		c.JSON(http.StatusOK, global.GetMemberListResponse{Code: global.ParamInvalid})
-		return
-	}
-	members = members[offset : offset+limit]
 	MemberList := make([]global.TMember, len(members))
 	for i, v := range members {
 		MemberList[i] = global.TMember{
@@ -115,7 +110,7 @@ func GetMemberList(c *gin.Context) {
 	}
 	// 返回
 	c.JSON(http.StatusOK, global.GetMemberListResponse{
-		Code: 0,
+		Code: global.OK,
 		Data: struct{ MemberList []global.TMember }{MemberList: MemberList}})
 }
 

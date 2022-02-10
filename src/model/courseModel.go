@@ -1,7 +1,6 @@
 package model
 
 import (
-	"course_select/src/database"
 	"github.com/jinzhu/gorm"
 	uuid "github.com/satori/go.uuid"
 )
@@ -47,16 +46,6 @@ func (course *Course) GetCourse(id string) (Course, error) {
 func (course *Course) GetCourses(tid string) ([]Course, error) {
 	var ans []Course
 	err := db.Where("teacher_id = ?", tid).Find(&ans).Error
-	if err != nil {
-		return ans, err
-	}
-	return ans, nil
-}
-
-// GetAllMembers 返回所有成员
-func (member *Member) GetAllMembers() ([]Member, error) {
-	var ans []Member
-	err := database.MySqlDb.Find(&ans).Error
 	if err != nil {
 		return ans, err
 	}

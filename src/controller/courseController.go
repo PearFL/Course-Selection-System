@@ -97,7 +97,28 @@ func UnbindCourse(c *gin.Context) {
 }
 
 func GetTeacherCourse(c *gin.Context) {
-
+	getTeacherCourseRequest := global.GetTeacherCourseRequest{}
+	courseModel := model.Course{}
+	if err := c.ShouldBind(&getTeacherCourseRequest); err != nil {
+		c.JSON(http.StatusOK, global.GetTeacherCourseResponse{Code: global.UnknownError})
+		return
+	}
+	courses, err := courseModel.GetCourses(getTeacherCourseRequest.TeacherID)
+	if err != nil {
+		c.JSON(http.StatusOK, global.GetTeacherCourseResponse{Code: global.UnknownError})
+		return
+	}
+	CourseList := make([]*global.TCourse, len(courses))
+	for i, v := range courses {
+		CourseList[i] = &global.TCourse{
+			CourseID:  v.CourseID,
+			Name:      v.Name,
+			TeacherID: v.TeacherID,
+		}
+	}
+	c.JSON(http.StatusOK, global.GetTeacherCourseResponse{
+		Code: global.OK,
+		Data: struct{ CourseList []*global.TCourse }{CourseList: CourseList}})
 }
 
 func ScheduleCourse(c *gin.Context) {
