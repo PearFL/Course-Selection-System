@@ -14,6 +14,7 @@ type Validator struct {
 }
 
 func (validator *Validator) ValidateMap(m map[string]interface{}, scene string) (bool, error) {
+
 	if _, ok := validator.Scenes[scene]; !ok {
 		msg := errors.New("scene is not exists")
 		return false, msg
