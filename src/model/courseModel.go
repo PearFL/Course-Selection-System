@@ -21,3 +21,23 @@ func (course *Course) BeforeCreate(scope *gorm.Scope) error {
 	uuid := uuid.NewV4().String()
 	return scope.SetColumn("course_id", uuid)
 }
+
+func (course *Course) CreateCourse() (string, error) {
+	err := db.Create(&course).Error
+	if err != nil {
+		return "", err
+	}
+	return course.CourseID, nil
+}
+
+func (course *Course) GetCourse(id string) (Course, error) {
+	var ans Course
+
+	err := db.Model(&Course{}).Where("course_id + ?", id).First(&ans).Error
+
+	if err != nil {
+		return ans, err
+	}
+
+	return ans, nil
+}
