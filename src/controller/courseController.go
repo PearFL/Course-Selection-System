@@ -98,3 +98,47 @@ func UnbindCourse(c *gin.Context) {
 func GetTeacherCourse(c *gin.Context) {
 
 }
+
+func ScheduleCourse(c *gin.Context) {
+	scheduleCourseRequest := global.ScheduleCourseRequest{}
+	if err := c.ShouldBind(&scheduleCourseRequest); err != nil {
+		c.JSON(http.StatusOK, global.ErrorResponse{Code: global.UnknownError, Message: "UnknownError"})
+		return
+	}
+
+	g := scheduleCourseRequest.TeacherCourseRelationShip
+
+	match := make(map[string]string, len(g))
+	ans := make(map[string]string, len(g))
+
+	cnt := 0
+	for i := range match {
+		match[i] = ""
+	}
+	var used map[string]bool
+	var f func(string) bool
+	f = func(v string) bool {
+		used[v] = true
+		for _, w := range g[v] {
+			if mw := match[w]; mw == "" || !used[mw] && f(mw) {
+				match[w] = v
+				match[v] = w
+
+				ans[v] = w
+
+				return true
+			}
+		}
+		return false
+	}
+
+	for v := range g {
+		if match[v] == "" {
+			used = make(map[string]bool, len(g))
+			if f(v) {
+				cnt++ // +=2
+			}
+		}
+	}
+	c.JSON(http.StatusOK, global.ScheduleCourseResponse{Code: global.OK, Data: ans})
+}
