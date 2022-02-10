@@ -65,6 +65,13 @@ const (
 
 // 只有管理员才能添加
 
+// 错误信息
+
+type ErrorResponse struct {
+	Code    ErrNo
+	Message string
+}
+
 type CreateMemberRequest struct {
 	Nickname string   `form:"Nickname" json:"Nickname" validate:"required|string:4,20|alpha"`                      // required，不小于 4 位 不超过 20 位
 	Username string   `form:"Username" json:"Username" validate:"required|string:8,20"`                            // required，只支持大小写，长度不小于 8 位 不超过 20 位

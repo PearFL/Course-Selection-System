@@ -33,7 +33,7 @@ func (course *Course) CreateCourse() (string, error) {
 func (course *Course) GetCourse(id string) (Course, error) {
 	var ans Course
 
-	err := db.Model(&Course{}).Where("course_id + ?", id).First(&ans).Error
+	err := db.Model(&Course{}).Where("course_id = ?", id).First(&ans).Error
 
 	if err != nil {
 		return ans, err

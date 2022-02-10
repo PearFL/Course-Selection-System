@@ -101,6 +101,7 @@ CREATE TABLE `member` (
   `username` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   `user_type` int DEFAULT NULL,
+  `is_deleted` tinyint(2) NOT NULL DEFAULT 0,
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -111,7 +112,7 @@ CREATE TABLE `member` (
 
 LOCK TABLES `member` WRITE;
 /*!40000 ALTER TABLE `member` DISABLE KEYS */;
-INSERT INTO `member` VALUES ('1bd82c07-71ee-4dc0-bc7b-36d4638eaaa5','yeye','hulu','fdf44dd58209f4f21104e92b850886ae',2),('2a4a0b95-dd0e-41eb-b56b-b3d5d50e539e','Alice','Alice','25d55ad283aa400af464c76d713c07ad',3),('81a47efe-65cd-4f1b-a789-68a538d1c39a','JudgeAdmin','JudgeAdmin','3f83fdd7e989c398ea157c58e3241dcd',1),('89180547-a847-4541-95b1-2aa703d482e9','icu','ui','5967ee71b80c6e3761b5414fd5b22dd7',2),('9057eee5-f1ba-4ff7-a9a4-ceec62a0ca1d','twt','twt','2ba38c72f45a830f2b8243a3a22236dd',2),('9eb72094-69ab-4407-9caf-6b39b657704f','wz','wz','36eed342177e32c235203aca93accde3',2),('e3551ad5-196d-42f7-8326-3687abda5f28','Tom','Tom','ddb14e5d1f19779c276e8d7b89ebd103',3),('e982ba88-e858-47ca-8a65-3263e73119b6','Bob','Bob','25d55ad283aa400af464c76d713c07ad',2),('ee33e324-3ec4-42fd-9e0f-3a79323a7768','mxh','mxh','4c3e4195b649599434c7ee3f1ed0d8d9',2);
+INSERT INTO `member` VALUES ('1bd82c07-71ee-4dc0-bc7b-36d4638eaaa5','yeye','hulu','fdf44dd58209f4f21104e92b850886ae',2,0),('2a4a0b95-dd0e-41eb-b56b-b3d5d50e539e','Alice','Alice','25d55ad283aa400af464c76d713c07ad',3,0),('81a47efe-65cd-4f1b-a789-68a538d1c39a','JudgeAdmin','JudgeAdmin','3f83fdd7e989c398ea157c58e3241dcd',1,0),('89180547-a847-4541-95b1-2aa703d482e9','icu','ui','5967ee71b80c6e3761b5414fd5b22dd7',2,0),('9057eee5-f1ba-4ff7-a9a4-ceec62a0ca1d','twt','twt','2ba38c72f45a830f2b8243a3a22236dd',2,0),('9eb72094-69ab-4407-9caf-6b39b657704f','wz','wz','36eed342177e32c235203aca93accde3',2,0),('e3551ad5-196d-42f7-8326-3687abda5f28','Tom','Tom','ddb14e5d1f19779c276e8d7b89ebd103',3,0),('e982ba88-e858-47ca-8a65-3263e73119b6','Bob','Bob','25d55ad283aa400af464c76d713c07ad',2,0),('ee33e324-3ec4-42fd-9e0f-3a79323a7768','mxh','mxh','4c3e4195b649599434c7ee3f1ed0d8d9',2,0);
 /*!40000 ALTER TABLE `member` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

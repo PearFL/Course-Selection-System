@@ -1,19 +1,12 @@
 package controller
 
 import (
-	"course_select/src/database"
 	global "course_select/src/global"
 	"course_select/src/model"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
-
-/*
-@title	CreateMember
-@description	创建成员
-@auth	马信宏	时间（2022/2/9   16:48 ）
-*/
 
 func CreateMember(c *gin.Context) {
 	// 用于定义接受哪些请求的参数
@@ -57,7 +50,7 @@ func CreateMember(c *gin.Context) {
 	// 	c.JSON(http.StatusOK, global.CreateMemberResponse{Code: 255 /*这里具体看是学生已存在还是怎么个其他错误*/})
 	// }
 
-	c.JSON(http.StatusOK, global.CreateMemberResponse{Code: 0, Data: struct{ UserID string }{ /*数据库返回参数*/ }})
+	c.JSON(http.StatusOK, global.CreateMemberResponse{Code: global.OK, Data: struct{ UserID string }{ /*数据库返回参数*/ }})
 
 }
 
@@ -67,18 +60,24 @@ func GetMember(c *gin.Context) {
 
 	// 用于定义获取参数值
 	if err := c.ShouldBind(&getMemberRequest); err != nil {
-		c.JSON(http.StatusOK, global.GetMemberResponse{Code: global.UnknownError})
+		c.JSON(http.StatusOK, global.ErrorResponse{Code: global.UnknownError, Message: "UnknownError"})
 		return
 	}
 
-	var result model.Member
-	err := database.MySqlDb.First(&model.Member{}, "user_id = ?", getMemberRequest.UserID).Scan(&result).Error
+	result, err := model.GetMember(getMemberRequest.UserID)
 	if err != nil {
-		fmt.Printf("failed, err: %v\n", err)
-		c.JSON(http.StatusOK, global.GetMemberResponse{Code: global.UserNotExisted})
+		// 用户不存在
+		c.JSON(http.StatusOK, global.ErrorResponse{Code: global.UserNotExisted, Message: "UserNotExisted"})
 		return
 	}
 
+	if result.IsDeleted == true {
+		// 用户已经被删除
+		c.JSON(http.StatusOK, global.ErrorResponse{Code: global.UserHasDeleted, Message: "UserHasDeleted"})
+		return
+	}
+
+	// 成功查找到用户
 	c.JSON(http.StatusOK, global.GetMemberResponse{Code: global.OK, Data: global.TMember{UserID: result.UserID, Nickname: result.Nickname,
 		Username: result.Username, UserType: result.UserType}})
 }
