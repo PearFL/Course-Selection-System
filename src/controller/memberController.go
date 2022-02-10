@@ -5,14 +5,13 @@ import (
 	"course_select/src/model"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 )
 
 func CreateMember(c *gin.Context) {
 	// 用于定义接受哪些请求的参数
 	createMemberRequest := global.CreateMemberRequest{}
-
-	// memberModel := model.Member{}
 
 	// 用于定义获取参数值
 	if err := c.ShouldBind(&createMemberRequest); err != nil {
@@ -57,14 +56,16 @@ func CreateMember(c *gin.Context) {
 func GetMember(c *gin.Context) {
 	// 用于定义接受哪些请求的参数
 	getMemberRequest := global.GetMemberRequest{}
-
+	memberModel := model.Member{}
 	// 用于定义获取参数值
 	if err := c.ShouldBind(&getMemberRequest); err != nil {
 		c.JSON(http.StatusOK, global.ErrorResponse{Code: global.UnknownError, Message: "UnknownError"})
 		return
 	}
 
-	result, err := model.GetMember(getMemberRequest.UserID)
+	log.Println(getMemberRequest)
+
+	result, err := memberModel.GetMember(getMemberRequest.UserID)
 	if err != nil {
 		// 用户不存在
 		c.JSON(http.StatusOK, global.ErrorResponse{Code: global.UserNotExisted, Message: "UserNotExisted"})
@@ -115,9 +116,49 @@ func GetMemberList(c *gin.Context) {
 }
 
 func UpdateMember(c *gin.Context) {
+	// 用于定义接受哪些请求的参数
+	updateMemberRequest := global.UpdateMemberRequest{}
 
+	// 用于定义获取参数值
+	if err := c.ShouldBind(&updateMemberRequest); err != nil {
+		c.JSON(http.StatusOK, global.ErrorResponse{Code: global.UnknownError, Message: "UnknownError"})
+		return
+	}
+
+	log.Println(updateMemberRequest)
+
+	err := model.UpdateMember(updateMemberRequest.UserID, updateMemberRequest.Nickname)
+
+	if err != nil {
+		// 用户不存在
+		c.JSON(http.StatusOK, global.ErrorResponse{Code: global.UserNotExisted, Message: "UserNotExisted"})
+		return
+	}
+
+	// 成功更新用户昵称
+	c.JSON(http.StatusOK, global.UpdateMemberResponse{Code: global.OK})
 }
 
 func DeleteMember(c *gin.Context) {
+	// 用于定义接受哪些请求的参数
+	deleteMemberRequest := global.DeleteMemberRequest{}
 
+	// 用于定义获取参数值
+	if err := c.ShouldBind(&deleteMemberRequest); err != nil {
+		c.JSON(http.StatusOK, global.ErrorResponse{Code: global.UnknownError, Message: "UnknownError"})
+		return
+	}
+
+	log.Println(deleteMemberRequest)
+
+	err := model.DeleteMember(deleteMemberRequest.UserID)
+
+	if err != nil {
+		// 用户不存在
+		c.JSON(http.StatusOK, global.ErrorResponse{Code: global.UserNotExisted, Message: "UserNotExisted"})
+		return
+	}
+
+	// 成功删除用户
+	c.JSON(http.StatusOK, global.DeleteMemberResponse{Code: global.OK})
 }

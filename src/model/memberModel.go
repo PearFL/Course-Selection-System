@@ -21,7 +21,7 @@ func (Member) TableName() string {
 	return "member"
 }
 
-func (model *Member) BeforeCreate(scope *gorm.Scope) error {
+func (member *Member) BeforeCreate(scope *gorm.Scope) error {
 	uuid := uuid.NewV4().String()
 	return scope.SetColumn("user_id", uuid)
 }
@@ -48,12 +48,10 @@ func GetMember(user_id string) (Member, error) {
 	return result, err
 }
 
-// GetAllMembers 返回所有成员
-func (member *Member) GetAllMembers() ([]Member, error) {
-	var ans []Member
-	err := database.MySqlDb.Find(&ans).Error
-	if err != nil {
-		return ans, err
-	}
-	return ans, nil
+func UpdateMember(user_id string, nickname string) error {
+	return db.Model(&Member{}).Where("user_id = ?", user_id).Update("nickname", nickname).Error
+}
+
+func DeleteMember(user_id string) error {
+	return db.Model(&Member{}).Where("user_id = ?", user_id).Update("is_deleted", 1).Error
 }
