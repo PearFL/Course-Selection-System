@@ -3,6 +3,7 @@ package model
 import (
 	"course_select/src/database"
 	types "course_select/src/global"
+	"errors"
 
 	"github.com/jinzhu/gorm"
 	uuid "github.com/satori/go.uuid"
@@ -59,9 +60,17 @@ func (member *Member) GetAllMembers(offset, limit int) ([]Member, error) {
 }
 
 func UpdateMember(user_id string, nickname string) error {
-	return db.Model(&Member{}).Where("user_id = ?", user_id).Update("nickname", nickname).Error
+	result := db.Model(&Member{}).Where("user_id = ?", user_id).Update("nickname", nickname)
+	if result.RowsAffected == 0 {
+		return errors.New("更新失败")
+	}
+	return nil
 }
 
 func DeleteMember(user_id string) error {
-	return db.Model(&Member{}).Where("user_id = ?", user_id).Update("is_deleted", 1).Error
+	result := db.Model(&Member{}).Where("user_id = ?", user_id).Update("is_deleted", true)
+	if result.RowsAffected == 0 {
+		return errors.New("删除失败")
+	}
+	return nil
 }
