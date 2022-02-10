@@ -1,7 +1,6 @@
 package model
 
 import (
-	"course_select/src/database"
 	types "course_select/src/global"
 
 	"github.com/jinzhu/gorm"
@@ -44,6 +43,14 @@ func (model *Member) CreateMember(newMember Member) (string, error) {
 
 func GetMember(user_id string) (Member, error) {
 	var result Member
-	err := database.MySqlDb.First(&Member{}, "user_id = ?", user_id).Scan(&result).Error
+	err := db.First(&Member{}, "user_id = ?", user_id).Scan(&result).Error
 	return result, err
+}
+
+func UpdateMember(user_id string, nickname string) error {
+	return db.Model(&Member{}).Where("user_id = ?", user_id).Update("nickname", nickname).Error
+}
+
+func DeleteMember(user_id string) error {
+	return db.Model(&Member{}).Where("user_id = ?", user_id).Update("is_deleted", 1).Error
 }
