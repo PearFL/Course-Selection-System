@@ -42,8 +42,8 @@ func (model *Member) CreateMember(newMember Member) (string, error) {
 @auth	马信宏	时间(2022/2/10   14:42)
 */
 
-func GetMember(user_id string) (Member, error) {
+func (member *Member) GetMember(id string) (Member, error) {
 	var result Member
-	err := database.MySqlDb.First(&Member{}, "user_id = ?", user_id).Scan(&result).Error
+	err := database.MySqlDb.First(&Member{}, "user_id = ?", id).Scan(&result).Error
 	return result, err
 }
