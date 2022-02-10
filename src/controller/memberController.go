@@ -67,28 +67,20 @@ func GetMember(c *gin.Context) {
 
 	// 用于定义获取参数值
 	if err := c.ShouldBind(&getMemberRequest); err != nil {
-		c.JSON(http.StatusOK, global.CreateMemberResponse{Code: global.UnknownError})
+		c.JSON(http.StatusOK, global.GetMemberResponse{Code: global.UnknownError})
 		return
 	}
 
-	fmt.Println(getMemberRequest)
-
-	result := database.MySqlDb.First(&model.Member{}, "user_id = ?", getMemberRequest.UserID)
-
-	fmt.Printf("%T\n", result.Value)
-	fmt.Println(result.Value)
-	// fmt.Println(result.Value.UserID)
-
-	/*obj := reflect.ValueOf(result)
-
-	elem := obj.Elem()
-
-	if elem.Kind() == reflect.Struct {
-		elem.FieldByName("Userid")
+	var result model.Member
+	err := database.MySqlDb.First(&model.Member{}, "user_id = ?", getMemberRequest.UserID).Scan(&result).Error
+	if err != nil {
+		fmt.Printf("failed, err: %v\n", err)
+		c.JSON(http.StatusOK, global.GetMemberResponse{Code: global.UserNotExisted})
+		return
 	}
 
-	fmt.Println(getMemberRequest.UserID)*/
-
+	c.JSON(http.StatusOK, global.GetMemberResponse{Code: global.OK, Data: global.TMember{UserID: result.UserID, Nickname: result.Nickname,
+		Username: result.Username, UserType: result.UserType}})
 }
 
 func GetMemberList(c *gin.Context) {
