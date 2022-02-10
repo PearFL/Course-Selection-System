@@ -56,16 +56,14 @@ func CreateMember(c *gin.Context) {
 func GetMember(c *gin.Context) {
 	// 用于定义接受哪些请求的参数
 	getMemberRequest := global.GetMemberRequest{}
-	memberModel := model.Member{}
+
 	// 用于定义获取参数值
 	if err := c.ShouldBind(&getMemberRequest); err != nil {
 		c.JSON(http.StatusOK, global.ErrorResponse{Code: global.UnknownError, Message: "UnknownError"})
 		return
 	}
 
-	log.Println(getMemberRequest)
-
-	result, err := memberModel.GetMember(getMemberRequest.UserID)
+	result, err := model.GetMember(getMemberRequest.UserID)
 	if err != nil {
 		// 用户不存在
 		c.JSON(http.StatusOK, global.ErrorResponse{Code: global.UserNotExisted, Message: "UserNotExisted"})
@@ -98,8 +96,14 @@ func GetMemberList(c *gin.Context) {
 		c.JSON(http.StatusOK, global.GetMemberListResponse{Code: global.UnknownError})
 		return
 	}
-	fmt.Println(members)
+
 	//判断参数是否合法
+	offset, limit := GetMemberListRequest.Offset, GetMemberListRequest.Limit
+	if offset < 0 || offset > len(members) || limit < 0 || offset+limit > len(members) {
+		c.JSON(http.StatusOK, global.GetMemberListResponse{Code: global.ParamInvalid})
+		return
+	}
+	members = members[offset : offset+limit]
 	MemberList := make([]global.TMember, len(members))
 	for i, v := range members {
 		MemberList[i] = global.TMember{
