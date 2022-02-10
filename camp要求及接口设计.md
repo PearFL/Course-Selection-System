@@ -413,6 +413,7 @@ type GetStudentCourseResponse struct {
 | username | varchar(255)   | 用户名   |
 | user_type | int      | 用户类型 |
 | password | varchar(255)   | 用户密码 |
+| is_deleted | tinyint(2)   | 标记是否软删除 |
 
 **Nickname可以修改，Username不可修改，因为Username是登录账号名**
 
@@ -559,7 +560,10 @@ UserType:1
 ```json
 {
     "Code": 0,
-    "UserID": "a6659530-1fcc-45c3-935a-33575b798aa9"
+    "Data": {
+        "UserID": "a6659530-1fcc-45c3-935a-33575b798aa9"
+    }
+    
 }
 ```
 

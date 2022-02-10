@@ -1,6 +1,7 @@
 package model
 
 import (
+	"course_select/src/database"
 	"github.com/jinzhu/gorm"
 	uuid "github.com/satori/go.uuid"
 )
@@ -20,4 +21,10 @@ func (Course) TableName() string {
 func (course *Course) BeforeCreate(scope *gorm.Scope) error {
 	uuid := uuid.NewV4().String()
 	return scope.SetColumn("course_id", uuid)
+}
+
+func GetCourse(course_id string) (Course, error) {
+	var result Course
+	err := database.MySqlDb.First(&Course{}, "course_id = ?", course_id).Scan(&result).Error
+	return result, err
 }

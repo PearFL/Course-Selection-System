@@ -8,12 +8,6 @@ import (
 	"net/http"
 )
 
-/*
-@title	CreateMember
-@description	创建成员
-@auth	马信宏	时间(2022/2/9   16:48)
-*/
-
 func CreateMember(c *gin.Context) {
 	// 用于定义接受哪些请求的参数
 	createMemberRequest := global.CreateMemberRequest{}
@@ -59,12 +53,6 @@ func CreateMember(c *gin.Context) {
 	c.JSON(http.StatusOK, global.CreateMemberResponse{Code: global.OK, Data: struct{ UserID string }{ /*数据库返回参数*/ }})
 
 }
-
-/*
-@title	GetMember
-@description	获取成员信息
-@auth	马信宏	时间(2022/2/10   14:41)
-*/
 
 func GetMember(c *gin.Context) {
 	// 用于定义接受哪些请求的参数
