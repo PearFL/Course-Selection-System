@@ -13,8 +13,6 @@ func CreateMember(c *gin.Context) {
 	// 用于定义接受哪些请求的参数
 	createMemberRequest := global.CreateMemberRequest{}
 
-	// memberModel := model.Member{}
-
 	// 用于定义获取参数值
 	if err := c.ShouldBind(&createMemberRequest); err != nil {
 		c.JSON(http.StatusOK, global.CreateMemberResponse{Code: global.UnknownError})
@@ -58,7 +56,7 @@ func CreateMember(c *gin.Context) {
 func GetMember(c *gin.Context) {
 	// 用于定义接受哪些请求的参数
 	getMemberRequest := global.GetMemberRequest{}
-
+	memberModel := model.Member{}
 	// 用于定义获取参数值
 	if err := c.ShouldBind(&getMemberRequest); err != nil {
 		c.JSON(http.StatusOK, global.ErrorResponse{Code: global.UnknownError, Message: "UnknownError"})
@@ -67,7 +65,7 @@ func GetMember(c *gin.Context) {
 
 	log.Println(getMemberRequest)
 
-	result, err := model.GetMember(getMemberRequest.UserID)
+	result, err := memberModel.GetMember(getMemberRequest.UserID)
 	if err != nil {
 		// 用户不存在
 		c.JSON(http.StatusOK, global.ErrorResponse{Code: global.UserNotExisted, Message: "UserNotExisted"})
