@@ -1,9 +1,11 @@
 package controller
 
 import (
+	"course_select/src/database"
 	global "course_select/src/global"
 	"course_select/src/model"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 )
 
@@ -34,11 +36,40 @@ func GetCourse(c *gin.Context) {
 }
 
 func BindCourse(c *gin.Context) {
+	bindCourseRequest := global.BindCourseRequest{}
 
+	if err := c.ShouldBind(&bindCourseRequest); err != nil {
+		c.JSON(http.StatusOK, global.BindCourseResponse{Code: global.UnknownError})
+		return
+	}
+
+	log.Println(bindCourseRequest)
+
+	result := database.MySqlDb.Exec("INSERT IGNORE INTO bind(teacher_id,course_id) VALUES (?,?)", bindCourseRequest.TeacherID, bindCourseRequest.CourseID)
+	if result.RowsAffected == 1 {
+		c.JSON(http.StatusOK, global.BindCourseResponse{Code: global.OK})
+	} else {
+		c.JSON(http.StatusOK, global.ErrorResponse{Code: global.CourseHasBound, Message: "CourseHasBound"})
+	}
 }
 
 func UnbindCourse(c *gin.Context) {
+	unbindCourseRequest := global.UnbindCourseRequest{}
 
+	if err := c.ShouldBind(&unbindCourseRequest); err != nil {
+		c.JSON(http.StatusOK, global.BindCourseResponse{Code: global.UnknownError})
+		return
+	}
+
+	log.Println(unbindCourseRequest)
+
+	unbind := model.Bind{TeacherID: unbindCourseRequest.TeacherID, CourseID: unbindCourseRequest.CourseID}
+	result := database.MySqlDb.Delete(&unbind)
+	if result.RowsAffected == 1 {
+		c.JSON(http.StatusOK, global.UnbindCourseResponse{Code: global.OK})
+	} else {
+		c.JSON(http.StatusOK, global.ErrorResponse{Code: global.CourseNotBind, Message: "CourseNotBind"})
+	}
 }
 
 func GetTeacherCourse(c *gin.Context) {

@@ -5,6 +5,7 @@ import (
 	"course_select/src/model"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 )
 
@@ -63,6 +64,8 @@ func GetMember(c *gin.Context) {
 		c.JSON(http.StatusOK, global.ErrorResponse{Code: global.UnknownError, Message: "UnknownError"})
 		return
 	}
+
+	log.Println(getMemberRequest)
 
 	result, err := model.GetMember(getMemberRequest.UserID)
 	if err != nil {
