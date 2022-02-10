@@ -59,6 +59,12 @@ func (member *Member) GetAllMembers(offset, limit int) ([]Member, error) {
 	return ans, nil
 }
 
+func GetMemberByUsernameAndPassword(username, password string) (Member, error) {
+	var ans = Member{}
+	err := db.Where("username = ? AND password = ?", username, password).First(&ans).Error
+	return ans, err
+}
+
 func UpdateMember(user_id string, nickname string) error {
 	result := db.Model(&Member{}).Where("user_id = ?", user_id).Update("nickname", nickname)
 	if result.RowsAffected == 0 {

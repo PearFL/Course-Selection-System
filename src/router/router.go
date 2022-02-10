@@ -20,9 +20,9 @@ func RegisterRouter(r *gin.Engine) {
 	g.POST("/member/delete", controller.DeleteMember)
 
 	// 登录
-	g.POST("/auth/login")
-	g.POST("/auth/logout")
-	g.GET("/auth/whoami")
+	g.POST("/auth/login", controller.Login)
+	g.POST("/auth/logout", controller.Logout)
+	g.GET("/auth/whoami", controller.WhoAmi)
 
 	// 排课
 	g.POST("/course/create", controller.CreateCourse)
