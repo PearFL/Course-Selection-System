@@ -1,59 +1,37 @@
 package controller
 
 import (
-	"course_select/src/database"
 	global "course_select/src/global"
 	"course_select/src/model"
 	"github.com/gin-gonic/gin"
 	"log"
-	"course_select/src/validate"
 	"net/http"
 )
 
 func CreateCourse(c *gin.Context) {
-	request := global.CreateCourseRequest{}
-	if err := c.ShouldBind(&request); err != nil {
-		c.JSON(http.StatusOK, global.GetCourseResponse{Code: global.UnknownError})
-		return
-	}
 
-	requestMap := global.Struct2Map(request)
-	courseValidate := validate.CourseValidate
-	res, _ := courseValidate.ValidateMap(requestMap, "add")
-	if !res {
-		c.JSON(http.StatusOK, global.GetCourseResponse{Code: global.ParamInvalid})
-		return
-	}
-
-	courseModel := model.Course{Name: request.Name, Capacity: request.Cap}
-	uuid, err := courseModel.CreateCourse()
-	if err != nil {
-		c.JSON(http.StatusOK, global.GetCourseResponse{Code: global.UnknownError})
-		return
-	}
-	c.JSON(http.StatusOK, global.CreateCourseResponse{Code: global.OK, Data: struct{ CourseID string }{uuid}})
 }
 
 func GetCourse(c *gin.Context) {
-	request := global.GetCourseRequest{}
-	courseModel := model.Course{}
-	if err := c.ShouldBind(&request); err != nil {
-		c.JSON(http.StatusOK, global.GetCourseResponse{Code: global.UnknownError})
-		return
-	}
-	requestMap := global.Struct2Map(request)
-	courseValidate := validate.CourseValidate
-	res, _ := courseValidate.ValidateMap(requestMap, "get")
-	if !res {
-		c.JSON(http.StatusOK, global.GetCourseResponse{Code: global.ParamInvalid})
-		return
-	}
-	course, err := courseModel.GetCourse(request.CourseID)
-	if err != nil {
-		c.JSON(http.StatusOK, global.GetCourseResponse{Code: global.CourseNotExisted})
-	}
-	c.JSON(http.StatusOK, global.GetCourseResponse{Code: global.OK, Data: global.TCourse{CourseID: course.CourseID, Name: course.Name, TeacherID: course.TeacherID}})
+	// 用于定义接受哪些请求的参数
+	getCourseRequest := global.GetCourseRequest{}
 
+	// 用于定义获取参数值
+	if err := c.ShouldBind(&getCourseRequest); err != nil {
+		c.JSON(http.StatusOK, global.ErrorResponse{Code: global.UnknownError, Message: "UnknownError"})
+		return
+	}
+
+	result, err := model.GetCourse(getCourseRequest.CourseID)
+	if err != nil {
+		// 课程不存在
+		c.JSON(http.StatusOK, global.ErrorResponse{Code: global.CourseNotExisted, Message: "CourseNotExisted"})
+		return
+	}
+
+	// 成功查找到课程
+	c.JSON(http.StatusOK, global.GetCourseResponse{Code: global.OK, Data: global.TCourse{CourseID: result.CourseID, Name: result.Name,
+		TeacherID: result.TeacherID}})
 }
 
 func BindCourse(c *gin.Context) {
@@ -66,11 +44,13 @@ func BindCourse(c *gin.Context) {
 
 	log.Println(bindCourseRequest)
 
-	result := database.MySqlDb.Exec("INSERT IGNORE INTO bind(teacher_id,course_id) VALUES (?,?)", bindCourseRequest.TeacherID, bindCourseRequest.CourseID)
-	if result.RowsAffected == 1 {
-		c.JSON(http.StatusOK, global.BindCourseResponse{Code: global.OK})
+	bind := model.Bind{TeacherID: bindCourseRequest.TeacherID, CourseID: bindCourseRequest.CourseID}
+	err := model.BindCourse(bind)
+
+	if err != nil {
+		c.JSON(http.StatusOK, global.BindCourseResponse{Code: global.CourseHasBound})
 	} else {
-		c.JSON(http.StatusOK, global.ErrorResponse{Code: global.CourseHasBound, Message: "CourseHasBound"})
+		c.JSON(http.StatusOK, global.BindCourseResponse{Code: global.OK})
 	}
 }
 
@@ -85,11 +65,12 @@ func UnbindCourse(c *gin.Context) {
 	log.Println(unbindCourseRequest)
 
 	unbind := model.Bind{TeacherID: unbindCourseRequest.TeacherID, CourseID: unbindCourseRequest.CourseID}
-	result := database.MySqlDb.Delete(&unbind)
-	if result.RowsAffected == 1 {
-		c.JSON(http.StatusOK, global.UnbindCourseResponse{Code: global.OK})
+	err := model.UnBindCourse(unbind)
+
+	if err != nil {
+		c.JSON(http.StatusOK, global.BindCourseResponse{Code: global.CourseNotBind})
 	} else {
-		c.JSON(http.StatusOK, global.ErrorResponse{Code: global.CourseNotBind, Message: "CourseNotBind"})
+		c.JSON(http.StatusOK, global.BindCourseResponse{Code: global.OK})
 	}
 }
 
