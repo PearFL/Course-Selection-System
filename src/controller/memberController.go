@@ -83,7 +83,35 @@ func GetMember(c *gin.Context) {
 }
 
 func GetMemberList(c *gin.Context) {
+	// 获取参数
+	GetMemberListRequest := global.GetMemberListRequest{}
+	memberModel := model.Member{}
+	if err := c.ShouldBind(&GetMemberListRequest); err != nil {
+		c.JSON(http.StatusOK, global.GetMemberListResponse{Code: global.UnknownError})
+		return
+	}
 
+	// 查询并取出结果
+	members, err := memberModel.GetAllMembers()
+	if err != nil {
+		c.JSON(http.StatusOK, global.GetMemberListResponse{Code: global.UnknownError})
+		return
+	}
+	fmt.Println(members)
+	//判断参数是否合法
+	MemberList := make([]global.TMember, len(members))
+	for i, v := range members {
+		MemberList[i] = global.TMember{
+			UserID:   v.UserID,
+			Nickname: v.Nickname,
+			Username: v.Username,
+			UserType: v.UserType,
+		}
+	}
+	// 返回
+	c.JSON(http.StatusOK, global.GetMemberListResponse{
+		Code: 0,
+		Data: struct{ MemberList []global.TMember }{MemberList: MemberList}})
 }
 
 func UpdateMember(c *gin.Context) {

@@ -4,9 +4,8 @@ import (
 	global "course_select/src/global"
 	"course_select/src/model"
 	"course_select/src/validate"
-	"net/http"
-
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func CreateCourse(c *gin.Context) {

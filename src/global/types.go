@@ -76,7 +76,7 @@ type CreateMemberRequest struct {
 	Nickname string   `form:"Nickname" json:"Nickname" validate:"required|string:4,20|alpha"`                      // required，不小于 4 位 不超过 20 位
 	Username string   `form:"Username" json:"Username" validate:"required|string:8,20"`                            // required，只支持大小写，长度不小于 8 位 不超过 20 位
 	Password string   `form:"Password" json:"Password" validate:"required|alphaNum|string:8,20|passwordValidator"` // required，同时包括大小写、数字，长度不少于 8 位 不超过 20 位
-	UserType UserType `form:"UserType" josn:"UserType" validate:"required"`                                        // required, 枚举值
+	UserType UserType `form:"UserType" json:"UserType" validate:"required"`                                        // required, 枚举值
 }
 
 type CreateMemberResponse struct {
