@@ -4,6 +4,7 @@ import (
 	global "course_select/src/global"
 	"course_select/src/model"
 	"course_select/src/validate"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
