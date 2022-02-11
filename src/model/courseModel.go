@@ -35,19 +35,20 @@ func (course *Course) GetCourse(id string) (Course, error) {
 
 	err := db.Model(&Course{}).Where("course_id = ?", id).First(&ans).Error
 
-	if err != nil {
-		return ans, err
-	}
-
-	return ans, nil
+	//if err != nil {
+	//	return ans, err
+	//}
+	//return ans, nil
+	return ans, err
 }
 
 // GetCourses 得到指定老师的课程
 func (course *Course) GetCourses(tid string) ([]Course, error) {
 	var ans []Course
 	err := db.Where("teacher_id = ?", tid).Find(&ans).Error
-	if err != nil {
-		return ans, err
-	}
-	return ans, nil
+	//if err != nil {
+	//	return ans, err
+	//}
+	//return ans, nil
+	return ans, err
 }

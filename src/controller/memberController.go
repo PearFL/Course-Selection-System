@@ -3,6 +3,7 @@ package controller
 import (
 	global "course_select/src/global"
 	"course_select/src/model"
+	"course_select/src/utils"
 	"course_select/src/validate"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -40,7 +41,7 @@ func CreateMember(c *gin.Context) {
 	}
 
 	memberModel := model.Member{Username: createMemberRequest.Username, Nickname: createMemberRequest.Nickname,
-		UserType: createMemberRequest.UserType, Password: createMemberRequest.Password}
+		UserType: createMemberRequest.UserType, Password: utils.Md5Encrypt(createMemberRequest.Password)}
 	uuid, err := memberModel.CreateMember()
 
 	if err != nil {

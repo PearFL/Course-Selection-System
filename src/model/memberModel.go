@@ -54,9 +54,15 @@ func (member *Member) GetAllMembers(offset, limit int) ([]Member, error) {
 	return ans, nil
 }
 
-func GetMemberByUsernameAndPassword(username, password string) (Member, error) {
+/*func GetMemberByUsernameAndPassword(username, password string) (Member, error) {
 	var ans = Member{}
 	err := db.Where("username = ? AND password = ?", username, password).First(&ans).Error
+	return ans, err
+}*/
+
+func GetMemberByUsername(username string) (Member, error) {
+	var ans = Member{}
+	err := db.Where("username = ? ", username).First(&ans).Error
 	return ans, err
 }
 

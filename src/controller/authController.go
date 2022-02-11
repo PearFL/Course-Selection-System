@@ -3,6 +3,7 @@ package controller
 import (
 	global "course_select/src/global"
 	"course_select/src/model"
+	"course_select/src/utils"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	uuid "github.com/satori/go.uuid"
@@ -20,9 +21,10 @@ func Login(c *gin.Context) {
 	}
 	log.Println(loginRequest)
 
-	user, err := model.GetMemberByUsernameAndPassword(loginRequest.Username, loginRequest.Password)
+	//user, err := model.GetMemberByUsernameAndPassword(loginRequest.Username, loginRequest.Password)
+	user, err := model.GetMemberByUsername(loginRequest.Username)
 	//用户不存在或者密码错误
-	if err != nil {
+	if err != nil || user.Password != utils.Md5Encrypt(loginRequest.Password) {
 		c.JSON(http.StatusOK, global.LoginResponse{Code: global.WrongPassword})
 		return
 	}
@@ -43,7 +45,12 @@ func Login(c *gin.Context) {
 		UserType: user.UserType,
 	}
 	session.Set(sessionId, v)
-	session.Save()
+	err = session.Save()
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusOK, global.LoginResponse{Code: global.UnknownError})
+		return
+	}
 
 	c.SetCookie(cookiesName, sessionId, 3600, "/", "localhost", false, true)
 	c.JSON(http.StatusOK, global.LoginResponse{
@@ -64,7 +71,12 @@ func Logout(c *gin.Context) {
 	session := sessions.Default(c)
 
 	session.Delete(sessionId)
-	session.Save()
+	err = session.Save()
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusOK, global.LogoutResponse{Code: global.UnknownError})
+		return
+	}
 
 	c.SetCookie(cookiesName, sessionId, -1, "/", "localhost", false, true)
 	c.JSON(http.StatusOK, global.LogoutResponse{Code: global.OK})
