@@ -88,3 +88,11 @@ func (f CreateMemberRequest) PasswordValidator(val string) bool {
 		return false
 	}
 }
+
+func (f CreateMemberRequest) UserTypeValidator(val UserType) bool {
+	if val != Admin && val != Student && val != Teacher {
+		return false
+	} else {
+		return true
+	}
+}

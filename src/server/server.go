@@ -2,7 +2,9 @@ package server
 
 import (
 	"course_select/src/config"
+	global "course_select/src/global"
 	router "course_select/src/router"
+	"encoding/gob"
 	"io"
 	"os"
 
@@ -17,6 +19,10 @@ func Run(httpServer *gin.Engine) {
 	// 设置日志格式
 	httpServer.Use(gin.LoggerWithFormatter(config.GetLogFormat))
 	httpServer.Use(gin.Recovery())
+
+	//设置session
+	gob.Register(global.TMember{})
+	httpServer.Use(global.GetSession())
 
 	// 注册路由
 	router.RegisterRouter(httpServer)

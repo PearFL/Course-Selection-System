@@ -124,7 +124,7 @@ func GetTeacherCourse(c *gin.Context) {
 func ScheduleCourse(c *gin.Context) {
 	scheduleCourseRequest := global.ScheduleCourseRequest{}
 	if err := c.ShouldBind(&scheduleCourseRequest); err != nil {
-		c.JSON(http.StatusOK, global.ErrorResponse{Code: global.UnknownError, Message: "UnknownError"})
+		c.JSON(http.StatusOK, global.ScheduleCourseResponse{Code: global.UnknownError})
 		return
 	}
 

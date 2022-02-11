@@ -4,7 +4,6 @@ import (
 	"course_select/src/database"
 	types "course_select/src/global"
 	"errors"
-
 	"github.com/jinzhu/gorm"
 	uuid "github.com/satori/go.uuid"
 )
@@ -27,23 +26,19 @@ func (member *Member) BeforeCreate(scope *gorm.Scope) error {
 	return scope.SetColumn("user_id", uuid)
 }
 
-// func md5V(str string) string {
-// 	h := md5.New()
-// 	h.Write([]byte(str))
-// 	return hex.EncodeToString(h.Sum(nil))
-// }
+func (member *Member) CreateMember() (string, error) {
+	if db.NewRecord(member.Username) == true {
+		return "", errors.New("UserHasExisted")
+	}
 
-func (model *Member) CreateMember(newMember Member) (string, error) {
-	return "不知道", nil
+	err := db.Create(&member).Error
+	if err != nil {
+		return "", err
+	}
+	return member.UserID, nil
 }
 
-/*
-@title	GetMember
-@description	基于user_id查询一个成员信息
-@auth	马信宏	时间(2022/2/10   14:42)
-*/
-
-func GetMember(user_id string) (Member, error) {
+func (model *Member) GetMember(user_id string) (Member, error) {
 	var result Member
 	err := database.MySqlDb.First(&Member{}, "user_id = ?", user_id).Scan(&result).Error
 	return result, err
@@ -57,6 +52,18 @@ func (member *Member) GetAllMembers(offset, limit int) ([]Member, error) {
 		return ans, err
 	}
 	return ans, nil
+}
+
+/*func GetMemberByUsernameAndPassword(username, password string) (Member, error) {
+	var ans = Member{}
+	err := db.Where("username = ? AND password = ?", username, password).First(&ans).Error
+	return ans, err
+}*/
+
+func GetMemberByUsername(username string) (Member, error) {
+	var ans = Member{}
+	err := db.Where("username = ? ", username).First(&ans).Error
+	return ans, err
 }
 
 func UpdateMember(user_id string, nickname string) error {

@@ -3,6 +3,8 @@ package controller
 import (
 	global "course_select/src/global"
 	"course_select/src/model"
+	"course_select/src/utils"
+	"course_select/src/validate"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -19,60 +21,68 @@ func CreateMember(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(createMemberRequest)
+	requestMap := global.Struct2Map(createMemberRequest)
+	memberValidate := validate.MemberValidate
+	res, _ := memberValidate.ValidateMap(requestMap, "add")
 
-	//TODO:这里用中间件检验参数是否符合要求
+	if !res {
+		c.JSON(http.StatusOK, global.CreateMemberResponse{Code: global.ParamInvalid})
+		return
+	}
 
-	//FIXME:我不大看得懂这几行里是什么意思，如果是鉴权的话交给路由中间件
-	// val, err := strconv.Atoi(c.PostForm("UserType"))
+	if createMemberRequest.PasswordValidator(createMemberRequest.Password) == false {
+		c.JSON(http.StatusOK, global.CreateMemberResponse{Code: global.ParamInvalid})
+		return
+	}
 
-	// // 枚举值(1: 管理员; 2: 学生; 3: 教师)
-	// if err == nil {
-	// 	if val == 1 {
-	// 		createMemberRequest.UserType = types.Admin
-	// 	} else if val == 2 {
-	// 		createMemberRequest.UserType = types.Student
-	// 	} else if val == 3 {
-	// 		createMemberRequest.UserType = types.Teacher
-	// 	} else {
-	// 		createMemberResponse.Code = types.ParamInvalid
-	// 	}
-	// } else {
-	// 	createMemberResponse.Code = types.ParamInvalid
-	// }
+	if createMemberRequest.UserTypeValidator(createMemberRequest.UserType) == false {
+		c.JSON(http.StatusOK, global.CreateMemberResponse{Code: global.ParamInvalid})
+		return
+	}
 
-	// TODO:sql,此处需要采用事务
-	// mysql检查member表内是否该用户名已存在(Code返回2)  mysql写入member表内该用户
-	// userID, err := memberModel.CreateMember(/*参数*/)
+	memberModel := model.Member{Username: createMemberRequest.Username, Nickname: createMemberRequest.Nickname,
+		UserType: createMemberRequest.UserType, Password: utils.Md5Encrypt(createMemberRequest.Password)}
+	uuid, err := memberModel.CreateMember()
 
-	// if err != nil {
-	// 	c.JSON(http.StatusOK, global.CreateMemberResponse{Code: 255 /*这里具体看是学生已存在还是怎么个其他错误*/})
-	// }
+	if err != nil {
+		if err.Error() == "UserHasExisted" {
+			c.JSON(http.StatusOK, global.CreateMemberResponse{Code: global.UserHasExisted})
+		} else {
+			c.JSON(http.StatusOK, global.CreateMemberResponse{Code: global.UnknownError})
+		}
+		return
+	}
 
-	c.JSON(http.StatusOK, global.CreateMemberResponse{Code: global.OK, Data: struct{ UserID string }{ /*数据库返回参数*/ }})
+	c.JSON(http.StatusOK, global.CreateMemberResponse{Code: global.OK, Data: struct{ UserID string }{uuid}})
 
 }
 
 func GetMember(c *gin.Context) {
 	// 用于定义接受哪些请求的参数
 	getMemberRequest := global.GetMemberRequest{}
-
+	memberModel := model.Member{}
 	// 用于定义获取参数值
 	if err := c.ShouldBind(&getMemberRequest); err != nil {
-		c.JSON(http.StatusOK, global.ErrorResponse{Code: global.UnknownError, Message: "UnknownError"})
+		c.JSON(http.StatusOK, global.GetMemberResponse{Code: global.UnknownError})
 		return
 	}
 
-	result, err := model.GetMember(getMemberRequest.UserID)
+	requestMap := global.Struct2Map(getMemberRequest)
+
+	fmt.Println(requestMap)
+
+	log.Println(getMemberRequest)
+
+	result, err := memberModel.GetMember(getMemberRequest.UserID)
 	if err != nil {
 		// 用户不存在
-		c.JSON(http.StatusOK, global.ErrorResponse{Code: global.UserNotExisted, Message: "UserNotExisted"})
+		c.JSON(http.StatusOK, global.GetMemberResponse{Code: global.UserNotExisted})
 		return
 	}
 
 	if result.IsDeleted == true {
 		// 用户已经被删除
-		c.JSON(http.StatusOK, global.ErrorResponse{Code: global.UserHasDeleted, Message: "UserHasDeleted"})
+		c.JSON(http.StatusOK, global.GetMemberResponse{Code: global.UserHasDeleted})
 		return
 	}
 
@@ -120,7 +130,16 @@ func UpdateMember(c *gin.Context) {
 
 	// 用于定义获取参数值
 	if err := c.ShouldBind(&updateMemberRequest); err != nil {
-		c.JSON(http.StatusOK, global.ErrorResponse{Code: global.UnknownError, Message: "UnknownError"})
+		c.JSON(http.StatusOK, global.UpdateMemberResponse{Code: global.UnknownError})
+		return
+	}
+
+	requestMap := global.Struct2Map(updateMemberRequest)
+	memberValidate := validate.MemberValidate
+	res, _ := memberValidate.ValidateMap(requestMap, "update")
+
+	if !res {
+		c.JSON(http.StatusOK, global.UpdateMemberResponse{Code: global.ParamInvalid})
 		return
 	}
 
@@ -130,7 +149,7 @@ func UpdateMember(c *gin.Context) {
 
 	if err != nil {
 		// 用户不存在
-		c.JSON(http.StatusOK, global.ErrorResponse{Code: global.UserNotExisted, Message: "UserNotExisted"})
+		c.JSON(http.StatusOK, global.UpdateMemberResponse{Code: global.UserNotExisted})
 		return
 	}
 
@@ -144,7 +163,7 @@ func DeleteMember(c *gin.Context) {
 
 	// 用于定义获取参数值
 	if err := c.ShouldBind(&deleteMemberRequest); err != nil {
-		c.JSON(http.StatusOK, global.ErrorResponse{Code: global.UnknownError, Message: "UnknownError"})
+		c.JSON(http.StatusOK, global.DeleteMemberResponse{Code: global.UnknownError})
 		return
 	}
 
@@ -154,7 +173,7 @@ func DeleteMember(c *gin.Context) {
 
 	if err != nil {
 		// 用户不存在
-		c.JSON(http.StatusOK, global.ErrorResponse{Code: global.UserNotExisted, Message: "UserNotExisted"})
+		c.JSON(http.StatusOK, global.DeleteMemberResponse{Code: global.UserNotExisted})
 		return
 	}
 
