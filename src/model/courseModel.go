@@ -44,10 +44,22 @@ func (course *Course) GetCourse(id string) (Course, error) {
 
 // GetCourses 得到指定老师的课程
 func (course *Course) GetCourses(tid string) ([]Course, error) {
+	var bindCourseOfTeacher []Bind
 	var ans []Course
-	err := db.Where("teacher_id = ?", tid).Find(&ans).Error
+	//得到该老师绑定的课程ID
+	err := db.Where("teacher_id = ?", tid).Find(&bindCourseOfTeacher).Error
 	if err != nil {
 		return ans, err
 	}
+	//取出每个课程ID对应的Course记录
+	for _, v := range bindCourseOfTeacher {
+		var temp []Course
+		err := db.Where("course_id = ?", v.CourseID).Find(&temp).Error
+		if err != nil {
+			return ans, err
+		}
+		ans = append(ans, temp...)
+	}
+
 	return ans, nil
 }
