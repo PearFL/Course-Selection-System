@@ -134,6 +134,15 @@ func UpdateMember(c *gin.Context) {
 		return
 	}
 
+	requestMap := global.Struct2Map(updateMemberRequest)
+	memberValidate := validate.MemberValidate
+	res, _ := memberValidate.ValidateMap(requestMap, "update")
+
+	if !res {
+		c.JSON(http.StatusOK, global.UpdateMemberResponse{Code: global.ParamInvalid})
+		return
+	}
+
 	log.Println(updateMemberRequest)
 
 	err := model.UpdateMember(updateMemberRequest.UserID, updateMemberRequest.Nickname)
