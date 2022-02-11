@@ -35,6 +35,7 @@ type RedisInfo struct {
 	MaxIdle    int
 	MaxActive  int
 	TimeOut    int
+	AUTH       string
 }
 
 func GetServerConfig() *ServerInfo {

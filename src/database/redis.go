@@ -2,7 +2,7 @@ package database
 
 import (
 	"course_select/src/config"
-	"fmt"
+	"log"
 	"time"
 
 	"github.com/gomodule/redigo/redis"
@@ -19,14 +19,14 @@ func init() {
 		Dial: func() (redis.Conn, error) {
 			c, err := redis.Dial(redisConf.Type, redisConf.Redis_Host)
 			if err != nil {
-				fmt.Println(err.Error())
+				log.Println(err)
 				return nil, err
 			}
-			/*if _, err := c.Do("AUTH", redisConf.AUTH); err != nil {
+			if _, err := c.Do("AUTH", redisConf.AUTH); err != nil {
 				_ = c.Close()
-				fmt.Println(err.Error())
+				log.Println(err.Error())
 				return nil, err
-			}*/
+			}
 			return c, nil
 		},
 	}
