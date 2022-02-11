@@ -22,7 +22,7 @@ func RegisterRouter(r *gin.Engine) {
 	// 登录
 	g.POST("/auth/login", controller.Login)
 	g.POST("/auth/logout", controller.Logout)
-	g.GET("/auth/whoami", controller.WhoAmi)
+	g.GET("/auth/whoami", controller.WhoAmI)
 
 	// 排课
 	g.POST("/course/create", controller.CreateCourse)
@@ -31,10 +31,10 @@ func RegisterRouter(r *gin.Engine) {
 	g.POST("/teacher/bind_course", controller.BindCourse)
 	g.POST("/teacher/unbind_course", controller.UnbindCourse)
 	g.GET("/teacher/get_course", controller.GetTeacherCourse)
-	g.POST("/course/schedule")
+	g.POST("/course/schedule", controller.ScheduleCourse)
 
 	// 抢课
-	g.POST("/student/book_course")
-	g.GET("/student/course")
+	g.POST("/student/book_course", controller.BookCourse)
+	g.GET("/student/course", controller.GetStudentCourse)
 
 }

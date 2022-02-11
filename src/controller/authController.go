@@ -70,7 +70,7 @@ func Logout(c *gin.Context) {
 	c.JSON(http.StatusOK, global.LogoutResponse{Code: global.OK})
 }
 
-func WhoAmi(c *gin.Context) {
+func WhoAmI(c *gin.Context) {
 	sessionId, err := c.Cookie(cookiesName)
 	if err != nil {
 		c.JSON(http.StatusOK, global.WhoAmIResponse{Code: global.LoginRequired})
