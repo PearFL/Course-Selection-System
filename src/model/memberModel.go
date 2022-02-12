@@ -10,7 +10,7 @@ import (
 type Member struct {
 	UserID    int            `json:"user_id" form:"user_id" gorm:"primary_key"`
 	Nickname  string         `json:"nickname" form:"nickname"`
-	Username  string         `json:"username" form:"username"`
+	Username  string         `json:"username" form:"username" gorm:"unique"`
 	Password  string         `json:"password" form:"password"`
 	UserType  types.UserType `json:"user_type" form:"user_type"`
 	IsDeleted bool           `json:"is_deleted" form:"is_deleted"`
