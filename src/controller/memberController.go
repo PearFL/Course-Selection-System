@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func CreateMember(c *gin.Context) {
@@ -42,18 +43,14 @@ func CreateMember(c *gin.Context) {
 
 	memberModel := model.Member{Username: createMemberRequest.Username, Nickname: createMemberRequest.Nickname,
 		UserType: createMemberRequest.UserType, Password: utils.Md5Encrypt(createMemberRequest.Password)}
-	uuid, err := memberModel.CreateMember()
+	id, err := memberModel.CreateMember()
 
 	if err != nil {
-		if err.Error() == "UserHasExisted" {
-			c.JSON(http.StatusOK, global.CreateMemberResponse{Code: global.UserHasExisted})
-		} else {
-			c.JSON(http.StatusOK, global.CreateMemberResponse{Code: global.UnknownError})
-		}
+		c.JSON(http.StatusOK, global.CreateMemberResponse{Code: global.UserHasExisted})
 		return
 	}
 
-	c.JSON(http.StatusOK, global.CreateMemberResponse{Code: global.OK, Data: struct{ UserID string }{uuid}})
+	c.JSON(http.StatusOK, global.CreateMemberResponse{Code: global.OK, Data: struct{ UserID string }{id}})
 
 }
 
@@ -87,7 +84,7 @@ func GetMember(c *gin.Context) {
 	}
 
 	// 成功查找到用户
-	c.JSON(http.StatusOK, global.GetMemberResponse{Code: global.OK, Data: global.TMember{UserID: result.UserID, Nickname: result.Nickname,
+	c.JSON(http.StatusOK, global.GetMemberResponse{Code: global.OK, Data: global.TMember{UserID: strconv.Itoa(result.UserID), Nickname: result.Nickname,
 		Username: result.Username, UserType: result.UserType}})
 }
 
@@ -112,7 +109,7 @@ func GetMemberList(c *gin.Context) {
 	MemberList := make([]global.TMember, len(members))
 	for i, v := range members {
 		MemberList[i] = global.TMember{
-			UserID:   v.UserID,
+			UserID:   strconv.Itoa(v.UserID),
 			Nickname: v.Nickname,
 			Username: v.Username,
 			UserType: v.UserType,

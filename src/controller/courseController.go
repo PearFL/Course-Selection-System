@@ -6,6 +6,7 @@ import (
 	"course_select/src/validate"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -52,7 +53,7 @@ func GetCourse(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusOK, global.GetCourseResponse{Code: global.CourseNotExisted})
 	}
-	c.JSON(http.StatusOK, global.GetCourseResponse{Code: global.OK, Data: global.TCourse{CourseID: course.CourseID, Name: course.Name, TeacherID: course.TeacherID}})
+	c.JSON(http.StatusOK, global.GetCourseResponse{Code: global.OK, Data: global.TCourse{CourseID: strconv.Itoa(course.CourseID), Name: course.Name, TeacherID: course.TeacherID}})
 
 }
 
@@ -111,7 +112,7 @@ func GetTeacherCourse(c *gin.Context) {
 	CourseList := make([]*global.TCourse, len(courses))
 	for i, v := range courses {
 		CourseList[i] = &global.TCourse{
-			CourseID:  v.CourseID,
+			CourseID:  strconv.Itoa(v.CourseID),
 			Name:      v.Name,
 			TeacherID: v.TeacherID,
 		}

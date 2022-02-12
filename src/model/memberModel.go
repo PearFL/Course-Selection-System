@@ -4,12 +4,11 @@ import (
 	"course_select/src/database"
 	types "course_select/src/global"
 	"errors"
-	"github.com/jinzhu/gorm"
-	uuid "github.com/satori/go.uuid"
+	"strconv"
 )
 
 type Member struct {
-	UserID    string         `json:"user_id" form:"user_id" gorm:"primary_key"`
+	UserID    int            `json:"user_id" form:"user_id" gorm:"primary_key"`
 	Nickname  string         `json:"nickname" form:"nickname"`
 	Username  string         `json:"username" form:"username"`
 	Password  string         `json:"password" form:"password"`
@@ -21,21 +20,19 @@ func (Member) TableName() string {
 	return "member"
 }
 
+/*
 func (member *Member) BeforeCreate(scope *gorm.Scope) error {
 	uuid := uuid.NewV4().String()
 	return scope.SetColumn("user_id", uuid)
-}
+}*/
 
 func (member *Member) CreateMember() (string, error) {
-	if db.NewRecord(member.Username) == true {
-		return "", errors.New("UserHasExisted")
-	}
 
-	err := db.Create(&member).Error
-	if err != nil {
+	if err := db.Create(&member).Error; err != nil {
 		return "", err
 	}
-	return member.UserID, nil
+
+	return strconv.Itoa(member.UserID), nil
 }
 
 func (model *Member) GetMember(user_id string) (Member, error) {

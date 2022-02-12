@@ -1,12 +1,9 @@
 package model
 
-import (
-	"github.com/jinzhu/gorm"
-	uuid "github.com/satori/go.uuid"
-)
+import "strconv"
 
 type Course struct {
-	CourseID    string `json:"course_id" form:"course_id" gorm:"primary_key"`
+	CourseID    int    `json:"course_id" form:"course_id" gorm:"primary_key"`
 	TeacherID   string `json:"teacher_id" form:"teacher_id"`
 	Name        string `json:"name" form:"name"`
 	Capacity    int    `json:"capacity" form:"capacity"`
@@ -17,17 +14,18 @@ func (Course) TableName() string {
 	return "course"
 }
 
+/*
 func (course *Course) BeforeCreate(scope *gorm.Scope) error {
 	uuid := uuid.NewV4().String()
 	return scope.SetColumn("course_id", uuid)
-}
+}*/
 
 func (course *Course) CreateCourse() (string, error) {
 	err := db.Create(&course).Error
 	if err != nil {
 		return "", err
 	}
-	return course.CourseID, nil
+	return strconv.Itoa(course.CourseID), nil
 }
 
 func (course *Course) GetCourse(id string) (Course, error) {
@@ -41,7 +39,6 @@ func (course *Course) GetCourse(id string) (Course, error) {
 	//return ans, nil
 	return ans, err
 }
-
 
 // GetCourses 得到指定老师的课程
 func (course *Course) GetCourses(tid string) ([]Course, error) {

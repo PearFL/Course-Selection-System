@@ -9,6 +9,7 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 var cookiesName string = "camp-session"
@@ -39,7 +40,7 @@ func Login(c *gin.Context) {
 
 	log.Println(sessionId, user)
 	v := global.TMember{
-		UserID:   user.UserID,
+		UserID:   strconv.Itoa(user.UserID),
 		Nickname: user.Nickname,
 		Username: user.Username,
 		UserType: user.UserType,
@@ -57,7 +58,7 @@ func Login(c *gin.Context) {
 		Code: global.OK,
 		Data: struct {
 			UserID string
-		}{user.UserID},
+		}{strconv.Itoa(user.UserID)},
 	})
 }
 
