@@ -67,6 +67,14 @@ func BindCourse(c *gin.Context) {
 
 	log.Println(bindCourseRequest)
 
+	requestMap := global.Struct2Map(bindCourseRequest)
+	courseValidate := validate.CourseValidate
+	res, _ := courseValidate.ValidateMap(requestMap, "bind")
+	if !res {
+		c.JSON(http.StatusOK, global.GetCourseResponse{Code: global.ParamInvalid})
+		return
+	}
+
 	atoi1, _ := strconv.Atoi(bindCourseRequest.TeacherID)
 	atoi2, _ := strconv.Atoi(bindCourseRequest.CourseID)
 	bind := model.Bind{TeacherID: atoi1, CourseID: atoi2}
@@ -89,6 +97,14 @@ func UnbindCourse(c *gin.Context) {
 
 	log.Println(unbindCourseRequest)
 
+	requestMap := global.Struct2Map(unbindCourseRequest)
+	courseValidate := validate.CourseValidate
+	res, _ := courseValidate.ValidateMap(requestMap, "unbind")
+	if !res {
+		c.JSON(http.StatusOK, global.GetCourseResponse{Code: global.ParamInvalid})
+		return
+	}
+
 	atoi1, _ := strconv.Atoi(unbindCourseRequest.TeacherID)
 	atoi2, _ := strconv.Atoi(unbindCourseRequest.CourseID)
 	unbind := model.Bind{TeacherID: atoi1, CourseID: atoi2}
@@ -108,6 +124,15 @@ func GetTeacherCourse(c *gin.Context) {
 		c.JSON(http.StatusOK, global.GetTeacherCourseResponse{Code: global.UnknownError})
 		return
 	}
+
+	requestMap := global.Struct2Map(getTeacherCourseRequest)
+	courseValidate := validate.CourseValidate
+	res, _ := courseValidate.ValidateMap(requestMap, "get_course")
+	if !res {
+		c.JSON(http.StatusOK, global.GetCourseResponse{Code: global.ParamInvalid})
+		return
+	}
+
 	courses, err := courseModel.GetCourses(getTeacherCourseRequest.TeacherID)
 	if err != nil {
 		c.JSON(http.StatusOK, global.GetTeacherCourseResponse{Code: global.UnknownError})
