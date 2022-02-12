@@ -64,15 +64,19 @@ func GetMemberByUsername(username string) (Member, error) {
 }
 
 func UpdateMember(user_id string, nickname string) error {
-	result := db.Model(&Member{}).Where("user_id = ?", user_id).Update("nickname", nickname)
-	if result.RowsAffected == 0 {
-		return errors.New("更新失败")
+	id, _ := strconv.Atoi(user_id)
+	var result = Member{}
+	db.Where(&Member{UserID: id}).First(&result)
+	if result.Nickname == "" {
+		return errors.New("未找到该用户！")
 	}
+	db.Model(&Member{}).Where("user_id = ?", user_id).Update("nickname", nickname)
 	return nil
 }
 
 func DeleteMember(user_id string) error {
-	result := db.Model(&Member{}).Where("user_id = ?", user_id).Update("is_deleted", true)
+	id, _ := strconv.Atoi(user_id)
+	result := db.Model(&Member{}).Where("user_id = ?", id).Update("is_deleted", true)
 	if result.RowsAffected == 0 {
 		return errors.New("删除失败")
 	}
