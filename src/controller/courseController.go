@@ -53,7 +53,7 @@ func GetCourse(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusOK, global.GetCourseResponse{Code: global.CourseNotExisted})
 	}
-	c.JSON(http.StatusOK, global.GetCourseResponse{Code: global.OK, Data: global.TCourse{CourseID: strconv.Itoa(course.CourseID), Name: course.Name, TeacherID: course.TeacherID}})
+	c.JSON(http.StatusOK, global.GetCourseResponse{Code: global.OK, Data: global.TCourse{CourseID: strconv.Itoa(course.CourseID), Name: course.Name}})
 
 }
 
@@ -67,7 +67,9 @@ func BindCourse(c *gin.Context) {
 
 	log.Println(bindCourseRequest)
 
-	bind := model.Bind{TeacherID: bindCourseRequest.TeacherID, CourseID: bindCourseRequest.CourseID}
+	atoi1, _ := strconv.Atoi(bindCourseRequest.TeacherID)
+	atoi2, _ := strconv.Atoi(bindCourseRequest.CourseID)
+	bind := model.Bind{TeacherID: atoi1, CourseID: atoi2}
 	err := model.BindCourse(bind)
 
 	if err != nil {
@@ -87,7 +89,9 @@ func UnbindCourse(c *gin.Context) {
 
 	log.Println(unbindCourseRequest)
 
-	unbind := model.Bind{TeacherID: unbindCourseRequest.TeacherID, CourseID: unbindCourseRequest.CourseID}
+	atoi1, _ := strconv.Atoi(unbindCourseRequest.TeacherID)
+	atoi2, _ := strconv.Atoi(unbindCourseRequest.CourseID)
+	unbind := model.Bind{TeacherID: atoi1, CourseID: atoi2}
 	err := model.UnBindCourse(unbind)
 
 	if err != nil {
@@ -114,7 +118,7 @@ func GetTeacherCourse(c *gin.Context) {
 		CourseList[i] = &global.TCourse{
 			CourseID:  strconv.Itoa(v.CourseID),
 			Name:      v.Name,
-			TeacherID: v.TeacherID,
+			TeacherID: getTeacherCourseRequest.TeacherID,
 		}
 	}
 	c.JSON(http.StatusOK, global.GetTeacherCourseResponse{

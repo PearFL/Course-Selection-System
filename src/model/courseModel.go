@@ -1,10 +1,13 @@
 package model
 
-import "strconv"
+import (
+	"fmt"
+	"strconv"
+)
 
 type Course struct {
-	CourseID    int    `json:"course_id" form:"course_id" gorm:"primary_key"`
-	TeacherID   string `json:"teacher_id" form:"teacher_id"`
+	CourseID int `json:"course_id" form:"course_id" gorm:"primary_key"`
+	// TeacherID   string `json:"teacher_id" form:"teacher_id"`
 	Name        string `json:"name" form:"name"`
 	Capacity    int    `json:"capacity" form:"capacity"`
 	CapSelected int    `json:"cap_select" form:"cap_select"`
@@ -23,6 +26,7 @@ func (course *Course) BeforeCreate(scope *gorm.Scope) error {
 func (course *Course) CreateCourse() (string, error) {
 	err := db.Create(&course).Error
 	if err != nil {
+		fmt.Println(err)
 		return "", err
 	}
 	return strconv.Itoa(course.CourseID), nil
