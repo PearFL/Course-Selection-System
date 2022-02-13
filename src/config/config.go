@@ -38,6 +38,13 @@ type RedisInfo struct {
 	AUTH       string
 }
 
+type MQInfo struct {
+	HOST     string
+	PORT     string
+	PASSWORD string
+	USER     string
+}
+
 func GetServerConfig() *ServerInfo {
 	cfg, err := ini.Load("configFile/config.ini")
 	if err != nil {
@@ -89,4 +96,15 @@ func GetLogFormat(param gin.LogFormatterParams) string {
 		param.Request.UserAgent(),
 		param.ErrorMessage,
 	)
+}
+
+func GetRabbitMQConfig() *MQInfo {
+	cfg, err := ini.Load("configFile/config.ini")
+	if err != nil {
+		log.Printf("Fail to read file: %v \n", err)
+		os.Exit(1)
+	}
+	d := new(MQInfo)
+	_ = cfg.Section("rabbitmq").MapTo(d)
+	return d
 }
