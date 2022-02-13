@@ -17,7 +17,7 @@ var cookiesName string = "camp-session"
 func Login(c *gin.Context) {
 	loginRequest := global.LoginRequest{}
 	if err := c.ShouldBind(&loginRequest); err != nil {
-		c.JSON(http.StatusOK, global.LoginResponse{Code: global.UnknownError})
+		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.UnknownError})
 		return
 	}
 	log.Println(loginRequest)
@@ -26,12 +26,12 @@ func Login(c *gin.Context) {
 	user, err := model.GetMemberByUsername(loginRequest.Username)
 	//用户不存在或者密码错误
 	if err != nil || user.Password != utils.Md5Encrypt(loginRequest.Password) {
-		c.JSON(http.StatusOK, global.LoginResponse{Code: global.WrongPassword})
+		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.WrongPassword})
 		return
 	}
 	//用户已删除
 	if user.IsDeleted {
-		c.JSON(http.StatusOK, global.LoginResponse{Code: global.UserHasDeleted})
+		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.UserHasDeleted})
 		return
 	}
 
@@ -49,7 +49,7 @@ func Login(c *gin.Context) {
 	err = session.Save()
 	if err != nil {
 		log.Println(err)
-		c.JSON(http.StatusOK, global.LoginResponse{Code: global.UnknownError})
+		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.UnknownError})
 		return
 	}
 
@@ -65,7 +65,7 @@ func Login(c *gin.Context) {
 func Logout(c *gin.Context) {
 	sessionId, err := c.Cookie(cookiesName)
 	if err != nil {
-		c.JSON(http.StatusOK, global.LogoutResponse{Code: global.LoginRequired})
+		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.LoginRequired})
 		return
 	}
 
@@ -75,7 +75,7 @@ func Logout(c *gin.Context) {
 	err = session.Save()
 	if err != nil {
 		log.Println(err)
-		c.JSON(http.StatusOK, global.LogoutResponse{Code: global.UnknownError})
+		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.UnknownError})
 		return
 	}
 
@@ -86,14 +86,14 @@ func Logout(c *gin.Context) {
 func WhoAmI(c *gin.Context) {
 	sessionId, err := c.Cookie(cookiesName)
 	if err != nil {
-		c.JSON(http.StatusOK, global.WhoAmIResponse{Code: global.LoginRequired})
+		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.LoginRequired})
 		return
 	}
 
 	session := sessions.Default(c)
 	v := session.Get(sessionId)
 	if v == nil {
-		c.JSON(http.StatusOK, global.WhoAmIResponse{Code: global.UnknownError})
+		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.UnknownError})
 		return
 	}
 	log.Println(v)

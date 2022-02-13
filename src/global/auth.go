@@ -14,11 +14,18 @@ func BackendAuth() gin.HandlerFunc {
 		// fmt.Println(c.FullPath())
 
 		session := sessions.Default(c)
-		sessionId, _ := c.Cookie(cookiesName)
+		sessionId, err := c.Cookie(cookiesName)
+
+		if err != nil {
+			c.JSON(http.StatusOK, ResponseMeta{Code: PermDenied})
+			c.Abort()
+			return
+		}
 
 		v := session.Get(sessionId)
 		if v == nil {
 			c.JSON(http.StatusOK, ResponseMeta{Code: PermDenied})
+			c.Abort()
 			return
 		}
 		// log.Println(v)
@@ -27,6 +34,7 @@ func BackendAuth() gin.HandlerFunc {
 		if user.UserType != 1 {
 			c.JSON(http.StatusOK, ResponseMeta{Code: PermDenied})
 			c.Abort()
+			return
 		}
 		c.Next()
 	}
