@@ -23,4 +23,5 @@ func init() {
 	for _, v := range binds {
 		rc.Do("HSET", "CourseToTeacher", v.CourseID, v.TeacherID)
 	}
+	rc.Close()
 }
