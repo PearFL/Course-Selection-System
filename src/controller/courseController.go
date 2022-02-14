@@ -82,7 +82,9 @@ func BindCourse(c *gin.Context) {
 	err := model.BindCourse(bind)
 
 	// 写redis
-	model.TeacherBindCourse(bindCourseRequest.TeacherID, bindCourseRequest.CourseID, database.RedisClient.Get())
+	rc := database.RedisClient.Get()
+	defer rc.Close()
+	model.TeacherBindCourse(bindCourseRequest.TeacherID, bindCourseRequest.CourseID, rc)
 
 	if err != nil {
 		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.CourseHasBound})
@@ -115,7 +117,9 @@ func UnbindCourse(c *gin.Context) {
 	err := model.UnBindCourse(unbind)
 
 	// 写redis
-	model.TeacherUnbindCourse(unbindCourseRequest.TeacherID, database.RedisClient.Get())
+	rc := database.RedisClient.Get()
+	defer rc.Close()
+	model.TeacherUnbindCourse(unbindCourseRequest.TeacherID, rc)
 
 	if err != nil {
 		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.CourseNotBind})

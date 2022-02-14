@@ -10,6 +10,7 @@ import (
 
 func BookCourse(c *gin.Context) {
 	rc := database.RedisClient.Get()
+	defer rc.Close()
 
 	// 用于定义接受哪些请求的参数
 	bookCourseRequest := global.BookCourseRequest{}
@@ -47,6 +48,8 @@ func BookCourse(c *gin.Context) {
 }
 
 func GetStudentCourse(c *gin.Context) {
+	rc := database.RedisClient.Get()
+	defer rc.Close()
 
 	// 用于定义接受哪些请求的参数
 	studentCourseRequest := global.GetStudentCourseRequest{}
@@ -57,11 +60,10 @@ func GetStudentCourse(c *gin.Context) {
 		return
 	}
 
-	strings := model.GetStudentCourses(studentCourseRequest.StudentID, database.RedisClient.Get())
+	strings := model.GetStudentCourses(studentCourseRequest.StudentID, rc)
 
 	var courses = make([]global.TCourse, len(strings))
-	rc := database.RedisClient.Get()
-	// TODO
+
 	// 从redis中提取课程信息组成response中的Data
 	for i, v := range strings {
 		courses[i] = global.TCourse{
