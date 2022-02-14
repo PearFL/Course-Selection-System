@@ -10,8 +10,9 @@ import (
 var RedisClient *redis.Pool
 
 const (
-	StudentIdPrefix string = "sid:"
-	CourseIdPrefix  string = "cid:"
+	StudentPrefix string = "sid:"
+	TeacherPrefix string = "tid:"
+	CoursePrefix  string = "cid:"
 )
 
 func init() {
@@ -34,6 +35,8 @@ func init() {
 			return c, nil
 		},
 	}
+	// TODO
+	// 清空redis并将mysql中的表注入redis
 }
 
 func IncrAndGet(courseId string, rdb redis.Conn) {
@@ -41,15 +44,19 @@ func IncrAndGet(courseId string, rdb redis.Conn) {
 }
 
 func DecrAndGet(courseId string, rdb redis.Conn) int {
-	count, _ := redis.Int(rdb.Do("HINCRBY", "CourseToCount", CourseIdPrefix+courseId, -1))
+	count, _ := redis.Int(rdb.Do("HINCRBY", "CourseToCount", CoursePrefix+courseId, -1))
 	return count
 }
 
 func UpdateStudentCourse(studentId string, courseId string, rdb redis.Conn) {
-	rdb.Do("SADD", StudentIdPrefix+studentId, CourseIdPrefix+courseId)
+	rdb.Do("SADD", StudentPrefix+studentId, CoursePrefix+courseId)
 }
 
 func GetStudentCourses(studentId string, rdb redis.Conn) []string {
-	result, _ := redis.Strings(rdb.Do("SGET", StudentIdPrefix+studentId))
+	result, _ := redis.Strings(rdb.Do("SGET", StudentPrefix+studentId))
 	return result
+}
+
+func UpdateTeacherCourse(teacherId string, courseId string, rdb redis.Conn) {
+	rdb.Do("SADD", TeacherPrefix+teacherId, CoursePrefix+courseId)
 }

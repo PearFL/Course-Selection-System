@@ -60,10 +60,11 @@ func GetStudentCourse(c *gin.Context) {
 	strings := database.GetStudentCourses(studentCourseRequest.StudentID, rc)
 
 	var courses = make([]global.TCourse, len(strings))
-
-	for i := range strings {
-		courses[i] = *global.CourseIdToTCourses[strings[i]]
-	}
+	// TODO
+	// 从redis中提取课程信息组成response中的Data
+	//for i := range strings {
+	//	courses[i] = *global.CourseIdToTCourses[strings[i]]
+	//}
 
 	c.JSON(http.StatusOK, global.GetStudentCourseResponse{Code: global.OK, Data: struct{ CourseList []global.TCourse }{CourseList: courses}})
 }

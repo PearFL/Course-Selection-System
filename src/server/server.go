@@ -3,6 +3,7 @@ package server
 import (
 	"course_select/src/config"
 	global "course_select/src/global"
+	"course_select/src/rabbitmq"
 	router "course_select/src/router"
 	"encoding/gob"
 	"io"
@@ -26,6 +27,7 @@ func Run(httpServer *gin.Engine) {
 
 	//建几个消息队列消费者
 	go func() {
+		rabbitmq.InitConsumer()
 		//TODO:
 	}()
 
