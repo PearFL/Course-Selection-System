@@ -2,13 +2,17 @@ package database
 
 import (
 	"course_select/src/config"
-	global "course_select/src/global"
 	"github.com/gomodule/redigo/redis"
 	"log"
 	"time"
 )
 
 var RedisClient *redis.Pool
+
+const (
+	StudentIdPrefix string = "sid:"
+	CourseIdPrefix  string = "cid:"
+)
 
 func init() {
 	redisConf := config.GetRedisConfig()
@@ -37,15 +41,15 @@ func IncrAndGet(courseId string, rdb redis.Conn) {
 }
 
 func DecrAndGet(courseId string, rdb redis.Conn) int {
-	count, _ := redis.Int(rdb.Do("HINCRBY", "CourseToCount", global.CourseIdPrefix+courseId, -1))
+	count, _ := redis.Int(rdb.Do("HINCRBY", "CourseToCount", CourseIdPrefix+courseId, -1))
 	return count
 }
 
 func UpdateStudentCourse(studentId string, courseId string, rdb redis.Conn) {
-	rdb.Do("SADD", global.StudentIdPrefix+studentId, global.CourseIdPrefix+courseId)
+	rdb.Do("SADD", StudentIdPrefix+studentId, CourseIdPrefix+courseId)
 }
 
 func GetStudentCourses(studentId string, rdb redis.Conn) []string {
-	result, _ := redis.Strings(rdb.Do("SGET", global.StudentIdPrefix+studentId))
+	result, _ := redis.Strings(rdb.Do("SGET", StudentIdPrefix+studentId))
 	return result
 }

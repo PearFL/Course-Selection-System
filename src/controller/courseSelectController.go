@@ -30,7 +30,16 @@ func BookCourse(c *gin.Context) {
 
 	// redis写库
 	database.UpdateStudentCourse(bookCourseRequest.StudentID, bookCourseRequest.CourseID, rc)
+
 	// 生产者生产消息
+	err := InitProducer(global.BookCourseRequest{
+		StudentID: bookCourseRequest.StudentID,
+		CourseID:  bookCourseRequest.CourseID,
+	})
+	if err != nil {
+		c.JSON(http.StatusOK, global.BookCourseResponse{Code: global.UnknownError})
+		return
+	}
 
 	c.JSON(http.StatusOK, global.BookCourseResponse{Code: global.OK})
 	return
