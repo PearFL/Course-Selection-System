@@ -5,13 +5,6 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-// redis前缀
-const (
-	StudentPrefix string = "sid:"
-	TeacherPrefix string = "tid:"
-	CoursePrefix  string = "cid:"
-)
-
 var db *gorm.DB = database.MySqlDb
 
 func SaveChoice(studentID, courseID string) error {

@@ -7,15 +7,25 @@ func IncrAndGet(courseId string, rdb redis.Conn) {
 }
 
 func DecrAndGet(courseId string, rdb redis.Conn) int {
-	count, _ := redis.Int(rdb.Do("HINCRBY", "CourseToCount", CoursePrefix+courseId, -1))
+	count, _ := redis.Int(rdb.Do("HINCRBY", "CourseToCount", courseId, -1))
 	return count
 }
 
 func UpdateStudentCourse(studentId string, courseId string, rdb redis.Conn) {
-	rdb.Do("SADD", StudentPrefix+studentId, CoursePrefix+courseId)
+	rdb.Do("SADD", studentId, courseId)
 }
 
 func GetStudentCourses(studentId string, rdb redis.Conn) []string {
-	result, _ := redis.Strings(rdb.Do("SGET", StudentPrefix+studentId))
+	result, _ := redis.Strings(rdb.Do("SGET", studentId))
+	return result
+}
+
+func GetCourseNameById(courseId string, rdb redis.Conn) string {
+	result, _ := redis.String(rdb.Do("HGET", "CourseToName", courseId))
+	return result
+}
+
+func GetTeacherByCourseId(courseId string, rdb redis.Conn) string {
+	result, _ := redis.String(rdb.Do("HGET", "CourseToTeacher", courseId))
 	return result
 }
