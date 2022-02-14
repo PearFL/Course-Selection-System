@@ -4,12 +4,13 @@ import (
 	global "course_select/src/global"
 	"course_select/src/model"
 	"course_select/src/utils"
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-gonic/gin"
-	uuid "github.com/satori/go.uuid"
 	"log"
 	"net/http"
 	"strconv"
+
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-gonic/gin"
+	uuid "github.com/satori/go.uuid"
 )
 
 var cookiesName string = "camp-session"

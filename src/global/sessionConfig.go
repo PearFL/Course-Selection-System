@@ -2,6 +2,7 @@ package types
 
 import (
 	"course_select/src/database"
+
 	"github.com/gin-contrib/sessions"
 	redis "github.com/gin-contrib/sessions/redis"
 	"github.com/gin-gonic/gin"
