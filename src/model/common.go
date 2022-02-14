@@ -2,8 +2,14 @@ package model
 
 import (
 	"course_select/src/database"
-
 	"github.com/jinzhu/gorm"
+)
+
+// redis前缀
+const (
+	StudentPrefix string = "sid:"
+	TeacherPrefix string = "tid:"
+	CoursePrefix  string = "cid:"
 )
 
 var db *gorm.DB = database.MySqlDb

@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"github.com/gomodule/redigo/redis"
 	"strconv"
 )
 
@@ -64,4 +65,12 @@ func (course *Course) GetCourses(tid string) ([]Course, error) {
 	}
 
 	return ans, nil
+}
+
+func TeacherBindCourse(teacherId string, courseId string, rdb redis.Conn) {
+	rdb.Do("SADD", TeacherPrefix+teacherId, CoursePrefix+courseId)
+}
+
+func TeacherUnbindCourse(teacherId string, rdb redis.Conn) {
+	rdb.Do("SDEL", TeacherPrefix+teacherId)
 }
