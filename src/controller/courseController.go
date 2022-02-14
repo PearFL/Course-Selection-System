@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"course_select/src/database"
 	global "course_select/src/global"
 	"course_select/src/model"
 	"course_select/src/validate"
@@ -75,6 +76,7 @@ func BindCourse(c *gin.Context) {
 		return
 	}
 
+	model.UpdateTeacherCourse(bindCourseRequest.TeacherID, bindCourseRequest.CourseID, database.RedisClient.Get())
 	atoi1, _ := strconv.Atoi(bindCourseRequest.TeacherID)
 	atoi2, _ := strconv.Atoi(bindCourseRequest.CourseID)
 	bind := model.Bind{TeacherID: atoi1, CourseID: atoi2}

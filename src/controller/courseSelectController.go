@@ -3,6 +3,7 @@ package controller
 import (
 	"course_select/src/database"
 	global "course_select/src/global"
+	"course_select/src/model"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -20,16 +21,16 @@ func BookCourse(c *gin.Context) {
 	}
 
 	// 秒杀减库存
-	cnt := database.DecrAndGet(bookCourseRequest.CourseID, rc)
+	cnt := model.DecrAndGet(bookCourseRequest.CourseID, rc)
 	if cnt < 0 {
 		// 超卖直接回滚
-		database.IncrAndGet(bookCourseRequest.CourseID, rc)
+		model.IncrAndGet(bookCourseRequest.CourseID, rc)
 		c.JSON(http.StatusOK, global.BookCourseResponse{Code: global.CourseNotAvailable})
 		return
 	}
 
 	// redis写库
-	database.UpdateStudentCourse(bookCourseRequest.StudentID, bookCourseRequest.CourseID, rc)
+	model.UpdateStudentCourse(bookCourseRequest.StudentID, bookCourseRequest.CourseID, rc)
 
 	// 生产者生产消息
 	err := InitProducer(global.BookCourseRequest{
@@ -46,7 +47,6 @@ func BookCourse(c *gin.Context) {
 }
 
 func GetStudentCourse(c *gin.Context) {
-	rc := database.RedisClient.Get()
 
 	// 用于定义接受哪些请求的参数
 	studentCourseRequest := global.GetStudentCourseRequest{}
@@ -57,14 +57,14 @@ func GetStudentCourse(c *gin.Context) {
 		return
 	}
 
-	strings := database.GetStudentCourses(studentCourseRequest.StudentID, rc)
+	strings := model.GetStudentCourses(studentCourseRequest.StudentID, database.RedisClient.Get())
 
 	var courses = make([]global.TCourse, len(strings))
 	// TODO
 	// 从redis中提取课程信息组成response中的Data
 	//for i := range strings {
 	//	courses[i] = *global.CourseIdToTCourses[strings[i]]
-	//}
+	//
 
 	c.JSON(http.StatusOK, global.GetStudentCourseResponse{Code: global.OK, Data: struct{ CourseList []global.TCourse }{CourseList: courses}})
 }
