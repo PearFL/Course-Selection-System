@@ -68,9 +68,9 @@ func (course *Course) GetCourses(tid string) ([]Course, error) {
 }
 
 func TeacherBindCourse(teacherId string, courseId string, rdb redis.Conn) {
-	rdb.Do("SADD", TeacherPrefix+teacherId, CoursePrefix+courseId)
+	rdb.Do("SET", TeacherPrefix+teacherId, CoursePrefix+courseId)
 }
 
 func TeacherUnbindCourse(teacherId string, rdb redis.Conn) {
-	rdb.Do("SDEL", TeacherPrefix+teacherId)
+	rdb.Do("DEL", TeacherPrefix+teacherId)
 }
