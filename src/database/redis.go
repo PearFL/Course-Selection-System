@@ -29,12 +29,5 @@ func init() {
 			return c, nil
 		},
 	}
-	// TODO
-	// 清空redis并将mysql中的表注入redis
-	get := RedisClient.Get()
-	get.Flush()
-	/*find := model.GetAllCourse()
-	fmt.Println(find)*/
-	// get.Do("SET", CourseId, CourseRemainCap)
 
 }
