@@ -76,11 +76,13 @@ func BindCourse(c *gin.Context) {
 		return
 	}
 
-	model.UpdateTeacherCourse(bindCourseRequest.TeacherID, bindCourseRequest.CourseID, database.RedisClient.Get())
 	atoi1, _ := strconv.Atoi(bindCourseRequest.TeacherID)
 	atoi2, _ := strconv.Atoi(bindCourseRequest.CourseID)
 	bind := model.Bind{TeacherID: atoi1, CourseID: atoi2}
 	err := model.BindCourse(bind)
+
+	// 写redis
+	model.TeacherBindCourse(bindCourseRequest.TeacherID, bindCourseRequest.CourseID, database.RedisClient.Get())
 
 	if err != nil {
 		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.CourseHasBound})
@@ -111,6 +113,9 @@ func UnbindCourse(c *gin.Context) {
 	atoi2, _ := strconv.Atoi(unbindCourseRequest.CourseID)
 	unbind := model.Bind{TeacherID: atoi1, CourseID: atoi2}
 	err := model.UnBindCourse(unbind)
+
+	// 写redis
+	model.TeacherUnbindCourse(unbindCourseRequest.TeacherID, database.RedisClient.Get())
 
 	if err != nil {
 		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.CourseNotBind})

@@ -26,6 +26,10 @@ func GetStudentCourses(studentId string, rdb redis.Conn) []string {
 	return result
 }
 
-func UpdateTeacherCourse(teacherId string, courseId string, rdb redis.Conn) {
+func TeacherBindCourse(teacherId string, courseId string, rdb redis.Conn) {
 	rdb.Do("SADD", TeacherPrefix+teacherId, CoursePrefix+courseId)
+}
+
+func TeacherUnbindCourse(teacherId string, rdb redis.Conn) {
+	rdb.Do("SDEL", TeacherPrefix+teacherId)
 }
