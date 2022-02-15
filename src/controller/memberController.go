@@ -169,9 +169,13 @@ func DeleteMember(c *gin.Context) {
 
 	err := model.DeleteMember(deleteMemberRequest.UserID)
 
-	if err != nil {
+	if err.Error() == "未找到该用户" {
 		// 用户不存在
 		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.UserNotExisted})
+		return
+	} else {
+		// 用户已删除
+		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.UserHasDeleted})
 		return
 	}
 

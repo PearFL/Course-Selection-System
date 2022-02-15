@@ -75,10 +75,16 @@ func UpdateMember(user_id string, nickname string) error {
 }
 
 func DeleteMember(user_id string) error {
-	id, _ := strconv.Atoi(user_id)
-	result := db.Model(&Member{}).Where("user_id = ?", id).Update("is_deleted", true)
-	if result.RowsAffected == 0 {
-		return errors.New("删除失败")
+	var ans = Member{}
+	db.Where("user_id = ? ", user_id).First(&ans)
+	if ans.Nickname == "" {
+		return errors.New("未找到该用户")
 	}
+	if ans.IsDeleted == true {
+		return errors.New("用户已删除")
+	}
+
+	id, _ := strconv.Atoi(user_id)
+	db.Model(&Member{}).Where("user_id = ?", id).Update("is_deleted", true)
 	return nil
 }
