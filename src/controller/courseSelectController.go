@@ -22,8 +22,14 @@ func BookCourse(c *gin.Context) {
 	}
 
 	// 校验这是不是学生
-	if !model.IsLegal(bookCourseRequest.StudentID, rc) {
+	if !model.IsStudentLegal(bookCourseRequest.StudentID, rc) {
 		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.StudentNotExisted})
+		return
+	}
+
+	// 校验课程存不存在
+	if !model.IsCourseLegal(bookCourseRequest.CourseID, rc) {
+		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.CourseNotExisted})
 		return
 	}
 
@@ -73,7 +79,7 @@ func GetStudentCourse(c *gin.Context) {
 	}
 
 	// 校验这是不是学生
-	if !model.IsLegal(studentCourseRequest.StudentID, rc) {
+	if !model.IsStudentLegal(studentCourseRequest.StudentID, rc) {
 		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.StudentNotExisted})
 		return
 	}

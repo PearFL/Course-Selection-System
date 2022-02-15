@@ -35,7 +35,12 @@ func IsBooked(studentId string, courseId string, rdb redis.Conn) bool {
 	return result
 }
 
-func IsLegal(studentId string, rdb redis.Conn) bool {
+func IsStudentLegal(studentId string, rdb redis.Conn) bool {
 	result, _ := redis.Bool(rdb.Do("SISMEMBER", "LegalStudentID", studentId))
+	return result
+}
+
+func IsCourseLegal(courseId string, rdb redis.Conn) bool {
+	result, _ := redis.Bool(rdb.Do("HEXISTS", "CourseToName", courseId))
 	return result
 }

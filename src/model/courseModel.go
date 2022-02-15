@@ -74,3 +74,8 @@ func TeacherBindCourse(teacherId string, courseId string, rdb redis.Conn) {
 func TeacherUnbindCourse(courseId string, rdb redis.Conn) {
 	rdb.Do("HDEL", "CourseToTeacher", courseId)
 }
+
+func AddCourse(course Course, rdb redis.Conn) {
+	rdb.Do("HSET", "CourseToCount", course.CourseID, course.Capacity-course.CapSelected)
+	rdb.Do("HSET", "CourseToName", course.CourseID, course.Name)
+}

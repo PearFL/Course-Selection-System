@@ -33,6 +33,9 @@ func CreateCourse(c *gin.Context) {
 		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.UnknownError})
 		return
 	}
+	rc := database.RedisClient.Get()
+	model.AddCourse(courseModel, rc)
+	rc.Close()
 	c.JSON(http.StatusOK, global.CreateCourseResponse{Code: global.OK, Data: struct{ CourseID string }{uuid}})
 }
 
