@@ -143,18 +143,20 @@ func UpdateMember(c *gin.Context) {
 
 	err := model.UpdateMember(updateMemberRequest.UserID, updateMemberRequest.Nickname)
 
+	if err == nil {
+		// 成功更新用户昵称
+		c.JSON(http.StatusOK, global.UpdateMemberResponse{Code: global.OK})
+	}
+
 	if err.Error() == "未找到该用户" {
 		// 用户不存在
-		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.UserNotExisted})
+		c.JSON(http.StatusOK, global.UpdateMemberResponse{Code: global.UserNotExisted})
 		return
 	} else if err.Error() == "用户已删除" {
 		// 用户已删除
-		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.UserHasDeleted})
+		c.JSON(http.StatusOK, global.UpdateMemberResponse{Code: global.UserHasDeleted})
 		return
 	}
-
-	// 成功更新用户昵称
-	c.JSON(http.StatusOK, global.UpdateMemberResponse{Code: global.OK})
 }
 
 func DeleteMember(c *gin.Context) {
@@ -171,16 +173,18 @@ func DeleteMember(c *gin.Context) {
 
 	err := model.DeleteMember(deleteMemberRequest.UserID)
 
+	if err == nil {
+		// 成功删除用户
+		c.JSON(http.StatusOK, global.DeleteMemberResponse{Code: global.OK})
+	}
+
 	if err.Error() == "未找到该用户" {
 		// 用户不存在
-		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.UserNotExisted})
+		c.JSON(http.StatusOK, global.DeleteMemberResponse{Code: global.UserNotExisted})
 		return
 	} else if err.Error() == "用户已删除" {
 		// 用户已删除
-		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.UserHasDeleted})
+		c.JSON(http.StatusOK, global.DeleteMemberResponse{Code: global.UserHasDeleted})
 		return
 	}
-
-	// 成功删除用户
-	c.JSON(http.StatusOK, global.DeleteMemberResponse{Code: global.OK})
 }
