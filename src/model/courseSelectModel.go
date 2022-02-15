@@ -16,7 +16,7 @@ func UpdateStudentCourse(studentId string, courseId string, rdb redis.Conn) {
 }
 
 func GetStudentCourses(studentId string, rdb redis.Conn) []string {
-	result, _ := redis.Strings(rdb.Do("SGET", studentId))
+	result, _ := redis.Strings(rdb.Do("SMEMBERS", studentId))
 	return result
 }
 
