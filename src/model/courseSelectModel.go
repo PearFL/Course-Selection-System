@@ -3,7 +3,7 @@ package model
 import "github.com/gomodule/redigo/redis"
 
 func IncrAndGet(courseId string, rdb redis.Conn) {
-	rdb.Do("HINCRBY CourseToCount " + courseId + " 1")
+	rdb.Do("HINCRBY", "CourseToCount", courseId, 1)
 }
 
 func DecrAndGet(courseId string, rdb redis.Conn) int {

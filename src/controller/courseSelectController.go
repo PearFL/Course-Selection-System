@@ -23,7 +23,7 @@ func BookCourse(c *gin.Context) {
 
 	// 校验学生是否选过这个课
 	if model.IsBooked(bookCourseRequest.StudentID, bookCourseRequest.CourseID, rc) {
-		c.JSON(http.StatusOK, global.BookCourseResponse{Code: global.StudentHasNoCourse})
+		c.JSON(http.StatusOK, global.BookCourseResponse{Code: global.RepeatRequest})
 		return
 	}
 
