@@ -5,7 +5,6 @@ import (
 	"course_select/src/model"
 	"course_select/src/utils"
 	"course_select/src/validate"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -65,11 +64,10 @@ func GetMember(c *gin.Context) {
 		return
 	}
 
-	requestMap := global.Struct2Map(getMemberRequest)
+	//requestMap := global.Struct2Map(getMemberRequest)
+	//fmt.Println(requestMap)
 
-	fmt.Println(requestMap)
-
-	log.Println(getMemberRequest)
+	//log.Println(getMemberRequest)
 
 	result, err := memberModel.GetMember(getMemberRequest.UserID)
 	if err != nil {
