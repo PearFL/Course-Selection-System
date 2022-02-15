@@ -73,10 +73,10 @@ func InitConsumer() {
 func HandleMessage(d amqp.Delivery) {
 	request := global.BookCourseRequest{}
 	if err := json.Unmarshal(d.Body, &request); err != nil {
-		//TODO:
+
 	}
 	err := model.SaveChoice(request.StudentID, request.CourseID)
 	if err != nil {
-		//TODO:
+
 	}
 }

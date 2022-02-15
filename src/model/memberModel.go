@@ -4,6 +4,7 @@ import (
 	"course_select/src/database"
 	types "course_select/src/global"
 	"errors"
+	"github.com/gomodule/redigo/redis"
 	"strconv"
 )
 
@@ -90,4 +91,12 @@ func DeleteMember(user_id string) error {
 	id, _ := strconv.Atoi(user_id)
 	db.Model(&Member{}).Where("user_id = ?", id).Update("is_deleted", true)
 	return nil
+}
+
+func RemoveStudentID(user_id string, rdb redis.Conn) {
+	rdb.Do("SREM", "LegalStudentID", user_id)
+}
+
+func AddStudenID(user_id string, rdb redis.Conn) {
+	rdb.Do("SADD", "LegalStudentID", user_id)
 }

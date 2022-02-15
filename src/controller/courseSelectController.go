@@ -21,9 +21,21 @@ func BookCourse(c *gin.Context) {
 		return
 	}
 
+	// 校验这是不是学生
+	if !model.IsStudentLegal(bookCourseRequest.StudentID, rc) {
+		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.StudentNotExisted})
+		return
+	}
+
+	// 校验课程存不存在
+	if !model.IsCourseLegal(bookCourseRequest.CourseID, rc) {
+		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.CourseNotExisted})
+		return
+	}
+
 	// 校验学生是否选过这个课
 	if model.IsBooked(bookCourseRequest.StudentID, bookCourseRequest.CourseID, rc) {
-		c.JSON(http.StatusOK, global.BookCourseResponse{Code: global.RepeatRequest})
+		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.RepeatRequest})
 		return
 	}
 
@@ -32,7 +44,7 @@ func BookCourse(c *gin.Context) {
 	if cnt < 0 {
 		// 超卖直接回滚
 		model.IncrAndGet(bookCourseRequest.CourseID, rc)
-		c.JSON(http.StatusOK, global.BookCourseResponse{Code: global.CourseNotAvailable})
+		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.CourseNotAvailable})
 		return
 	}
 
@@ -45,7 +57,7 @@ func BookCourse(c *gin.Context) {
 		CourseID:  bookCourseRequest.CourseID,
 	})
 	if err != nil {
-		c.JSON(http.StatusOK, global.BookCourseResponse{Code: global.UnknownError})
+		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.UnknownError})
 		return
 	}
 
@@ -63,6 +75,12 @@ func GetStudentCourse(c *gin.Context) {
 	// 用于定义获取参数值
 	if err := c.ShouldBind(&studentCourseRequest); err != nil {
 		c.JSON(http.StatusOK, global.GetStudentCourseResponse{Code: global.UnknownError})
+		return
+	}
+
+	// 校验这是不是学生
+	if !model.IsStudentLegal(studentCourseRequest.StudentID, rc) {
+		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.StudentNotExisted})
 		return
 	}
 
