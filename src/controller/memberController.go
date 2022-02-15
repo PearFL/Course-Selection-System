@@ -146,6 +146,7 @@ func UpdateMember(c *gin.Context) {
 	if err == nil {
 		// 成功更新用户昵称
 		c.JSON(http.StatusOK, global.UpdateMemberResponse{Code: global.OK})
+		return
 	}
 
 	if err.Error() == "未找到该用户" {
@@ -176,6 +177,7 @@ func DeleteMember(c *gin.Context) {
 	if err == nil {
 		// 成功删除用户
 		c.JSON(http.StatusOK, global.DeleteMemberResponse{Code: global.OK})
+		return
 	}
 
 	if err.Error() == "未找到该用户" {
