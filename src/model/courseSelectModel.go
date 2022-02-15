@@ -29,3 +29,8 @@ func GetTeacherByCourseId(courseId string, rdb redis.Conn) string {
 	result, _ := redis.String(rdb.Do("HGET", "CourseToTeacher", courseId))
 	return result
 }
+
+func IsBooked(studentId string, courseId string, rdb redis.Conn) bool {
+	result, _ := redis.Bool(rdb.Do("SISMEMBER", studentId, courseId))
+	return result
+}

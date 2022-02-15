@@ -21,6 +21,12 @@ func BookCourse(c *gin.Context) {
 		return
 	}
 
+	// 校验学生是否选过这个课
+	if model.IsBooked(bookCourseRequest.StudentID, bookCourseRequest.CourseID, rc) {
+		c.JSON(http.StatusOK, global.BookCourseResponse{Code: global.StudentHasNoCourse})
+		return
+	}
+
 	// 秒杀减库存
 	cnt := model.DecrAndGet(bookCourseRequest.CourseID, rc)
 	if cnt < 0 {
