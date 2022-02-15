@@ -68,19 +68,22 @@ func UpdateMember(user_id string, nickname string) error {
 	var result = Member{}
 	db.Where(&Member{UserID: id}).First(&result)
 	if result.Nickname == "" {
-		return errors.New("未找到该用户！")
+		return errors.New("未找到该用户")
+	}
+	if result.IsDeleted == true {
+		return errors.New("用户已删除")
 	}
 	db.Model(&Member{}).Where("user_id = ?", user_id).Update("nickname", nickname)
 	return nil
 }
 
 func DeleteMember(user_id string) error {
-	var ans = Member{}
-	db.Where("user_id = ? ", user_id).First(&ans)
-	if ans.Nickname == "" {
+	var result = Member{}
+	db.Where("user_id = ? ", user_id).First(&result)
+	if result.Nickname == "" {
 		return errors.New("未找到该用户")
 	}
-	if ans.IsDeleted == true {
+	if result.IsDeleted == true {
 		return errors.New("用户已删除")
 	}
 

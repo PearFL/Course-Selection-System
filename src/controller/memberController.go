@@ -143,9 +143,13 @@ func UpdateMember(c *gin.Context) {
 
 	err := model.UpdateMember(updateMemberRequest.UserID, updateMemberRequest.Nickname)
 
-	if err != nil {
+	if err.Error() == "未找到该用户" {
 		// 用户不存在
 		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.UserNotExisted})
+		return
+	} else if err.Error() == "用户已删除" {
+		// 用户已删除
+		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.UserHasDeleted})
 		return
 	}
 
@@ -171,7 +175,7 @@ func DeleteMember(c *gin.Context) {
 		// 用户不存在
 		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.UserNotExisted})
 		return
-	} else {
+	} else if err.Error() == "用户已删除" {
 		// 用户已删除
 		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.UserHasDeleted})
 		return
