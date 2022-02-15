@@ -1,6 +1,7 @@
 package model
 
 import (
+	global "course_select/src/global"
 	"errors"
 )
 
@@ -18,6 +19,18 @@ func BindCourse(bind Bind) error {
 	//go get -u gorm.io/driver/mysql // get dialector of mysql from gorm
 	//db.Clauses(clause.Insert{Modifier: "IGNORE"}).Create(&user)
 	//var db := database.MySqlDb.DB()
+	var member Member
+	err := db.First(&Member{}, "user_id = ?", bind.TeacherID).Scan(&member).Error
+	if err != nil || member.UserType != global.Teacher {
+		return errors.New("TeacherNotExisted")
+	}
+
+	var course Course
+	err = db.Model(&Course{}).Where("course_id = ?", bind.CourseID).First(&course).Error
+	if err != nil {
+		return errors.New("CourseNotExisted")
+	}
+
 	result := db.Exec("INSERT IGNORE INTO bind(teacher_id,course_id) VALUES (?,?)", bind.TeacherID, bind.CourseID)
 	if result.RowsAffected == 0 {
 		return errors.New("CourseHasBound")

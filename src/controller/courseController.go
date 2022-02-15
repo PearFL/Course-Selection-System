@@ -67,7 +67,7 @@ func BindCourse(c *gin.Context) {
 		return
 	}
 
-	log.Println(bindCourseRequest)
+	//log.Println(bindCourseRequest)
 
 	requestMap := global.Struct2Map(bindCourseRequest)
 	courseValidate := validate.CourseValidate
@@ -81,17 +81,26 @@ func BindCourse(c *gin.Context) {
 	atoi2, _ := strconv.Atoi(bindCourseRequest.CourseID)
 	bind := model.Bind{TeacherID: atoi1, CourseID: atoi2}
 	err := model.BindCourse(bind)
+	if err.Error() == "TeacherNotExisted" {
+		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.UserNotExisted})
+		return
+	}
+	if err.Error() == "CourseNotExisted" {
+		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.CourseNotExisted})
+		return
+	}
+	if err.Error() == "CourseHasBound" {
+		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.CourseHasBound})
+		return
+	}
 
 	// 写redis
 	rc := database.RedisClient.Get()
 	defer rc.Close()
 	model.TeacherBindCourse(bindCourseRequest.TeacherID, bindCourseRequest.CourseID, rc)
 
-	if err != nil {
-		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.CourseHasBound})
-	} else {
-		c.JSON(http.StatusOK, global.BindCourseResponse{Code: global.OK})
-	}
+	c.JSON(http.StatusOK, global.BindCourseResponse{Code: global.OK})
+
 }
 
 func UnbindCourse(c *gin.Context) {
@@ -102,7 +111,7 @@ func UnbindCourse(c *gin.Context) {
 		return
 	}
 
-	log.Println(unbindCourseRequest)
+	//log.Println(unbindCourseRequest)
 
 	requestMap := global.Struct2Map(unbindCourseRequest)
 	courseValidate := validate.CourseValidate
@@ -116,17 +125,18 @@ func UnbindCourse(c *gin.Context) {
 	atoi2, _ := strconv.Atoi(unbindCourseRequest.CourseID)
 	unbind := model.Bind{TeacherID: atoi1, CourseID: atoi2}
 	err := model.UnBindCourse(unbind)
+	if err != nil {
+		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.CourseNotBind})
+		return
+	}
 
 	// 写redis
 	rc := database.RedisClient.Get()
 	defer rc.Close()
 	model.TeacherUnbindCourse(unbindCourseRequest.TeacherID, rc)
 
-	if err != nil {
-		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.CourseNotBind})
-	} else {
-		c.JSON(http.StatusOK, global.UnbindCourseResponse{Code: global.OK})
-	}
+	c.JSON(http.StatusOK, global.UnbindCourseResponse{Code: global.OK})
+
 }
 
 func GetTeacherCourse(c *gin.Context) {
