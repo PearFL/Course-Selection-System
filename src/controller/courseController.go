@@ -43,6 +43,7 @@ func GetCourse(c *gin.Context) {
 		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.UnknownError})
 		return
 	}
+	log.Println(request)
 	requestMap := global.Struct2Map(request)
 	courseValidate := validate.CourseValidate
 	res, _ := courseValidate.ValidateMap(requestMap, "get")

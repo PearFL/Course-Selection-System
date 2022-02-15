@@ -27,6 +27,7 @@ func Login(c *gin.Context) {
 	user, err := model.GetMemberByUsername(loginRequest.Username)
 	//用户不存在或者密码错误
 	if err != nil || user.Password != utils.Md5Encrypt(loginRequest.Password) {
+
 		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.WrongPassword})
 		return
 	}
@@ -54,7 +55,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie(cookiesName, sessionId, 3600, "/", "localhost", false, true)
+	c.SetCookie(cookiesName, sessionId, 3600, "/", "", false, true)
 	c.JSON(http.StatusOK, global.LoginResponse{
 		Code: global.OK,
 		Data: struct {
@@ -80,7 +81,7 @@ func Logout(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie(cookiesName, sessionId, -1, "/", "localhost", false, true)
+	c.SetCookie(cookiesName, sessionId, -1, "/", "", false, true)
 	c.JSON(http.StatusOK, global.LogoutResponse{Code: global.OK})
 }
 

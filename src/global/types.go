@@ -188,7 +188,7 @@ type CreateCourseResponse struct {
 // 获取课程
 // Method: Get
 type GetCourseRequest struct {
-	CourseID string
+	CourseID string `json:"CourseID" form:"CourseID" binding:"required"`
 }
 
 type GetCourseResponse struct {
