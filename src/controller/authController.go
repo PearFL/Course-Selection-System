@@ -73,6 +73,11 @@ func Logout(c *gin.Context) {
 
 	session := sessions.Default(c)
 
+	if session.Get(sessionId) == nil {
+		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.LoginRequired})
+		return
+	}
+
 	session.Delete(sessionId)
 	err = session.Save()
 	if err != nil {
@@ -95,7 +100,7 @@ func WhoAmI(c *gin.Context) {
 	session := sessions.Default(c)
 	v := session.Get(sessionId)
 	if v == nil {
-		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.UnknownError})
+		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.LoginRequired})
 		return
 	}
 	log.Println(v)
