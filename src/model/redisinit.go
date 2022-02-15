@@ -23,5 +23,11 @@ func init() {
 	for _, v := range binds {
 		rc.Do("HSET", "CourseToTeacher", v.CourseID, v.TeacherID)
 	}
+
+	var members []Member
+	db.Model(&Member{}).Where("user_type = ? and is_deleted = ?", "3", "0").Find(&members)
+	for _, v := range members {
+		rc.Do("SADD", "LegalStudentID", v.UserID)
+	}
 	rc.Close()
 }
