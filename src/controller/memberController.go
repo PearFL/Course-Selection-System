@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"course_select/src/database"
 	global "course_select/src/global"
 	"course_select/src/model"
 	"course_select/src/utils"
@@ -48,6 +49,12 @@ func CreateMember(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.UserHasExisted})
 		return
+	}
+
+	if createMemberRequest.UserType == global.Student {
+		rc := database.RedisClient.Get()
+		model.AddStudenID(id, rc)
+		rc.Close()
 	}
 
 	c.JSON(http.StatusOK, global.CreateMemberResponse{Code: global.OK, Data: struct{ UserID string }{id}})
@@ -176,6 +183,9 @@ func DeleteMember(c *gin.Context) {
 
 	if err == nil {
 		// 成功删除用户
+		rc := database.RedisClient.Get()
+		model.RemoveStudentID(deleteMemberRequest.UserID, rc)
+		rc.Close()
 		c.JSON(http.StatusOK, global.DeleteMemberResponse{Code: global.OK})
 		return
 	}
