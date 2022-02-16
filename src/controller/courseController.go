@@ -145,6 +145,7 @@ func UnbindCourse(c *gin.Context) {
 func GetTeacherCourse(c *gin.Context) {
 	getTeacherCourseRequest := global.GetTeacherCourseRequest{}
 	courseModel := model.Course{}
+	memberModel := model.Member{}
 	if err := c.ShouldBind(&getTeacherCourseRequest); err != nil {
 		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.UnknownError})
 		return
@@ -157,7 +158,11 @@ func GetTeacherCourse(c *gin.Context) {
 		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.ParamInvalid})
 		return
 	}
-
+	member, _ := memberModel.GetMember(getTeacherCourseRequest.TeacherID)
+	if member.UserType != 3 {
+		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.ParamInvalid})
+		return
+	}
 	courses, err := courseModel.GetCourses(getTeacherCourseRequest.TeacherID)
 	if err != nil {
 		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.UnknownError})
