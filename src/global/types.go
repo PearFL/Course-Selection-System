@@ -19,15 +19,14 @@ const (
 	CourseNotAvailable ErrNo = 7   // 课程已满
 	CourseHasBound     ErrNo = 8   // 课程已绑定过
 	CourseNotBind      ErrNo = 9   // 课程未绑定过
-	PermDenied         ErrNo = 10   // 没有操作权限
-	StudentNotExisted  ErrNo = 11   // 学生不存在
-	CourseNotExisted   ErrNo = 12   // 课程不存在
+	PermDenied         ErrNo = 10  // 没有操作权限
+	StudentNotExisted  ErrNo = 11  // 学生不存在
+	CourseNotExisted   ErrNo = 12  // 课程不存在
 	StudentHasNoCourse ErrNo = 13  // 学生没有课程
 	StudentHasCourse   ErrNo = 14  // 学生有课程
-
+	RepeatRequest      ErrNo = 254 // 重复请求
 	UnknownError       ErrNo = 255 // 未知错误
 )
-
 
 type ResponseMeta struct {
 	Code ErrNo
@@ -41,8 +40,8 @@ type TMember struct {
 }
 
 type TCourse struct {
-	CourseID string
-	Name     string
+	CourseID  string
+	Name      string
 	TeacherID string
 }
 
@@ -67,10 +66,10 @@ const (
 // 只有管理员才能添加
 
 type CreateMemberRequest struct {
-	Nickname string   // required，不小于 4 位 不超过 20 位
-	Username string   // required，只支持大小写，长度不小于 8 位 不超过 20 位
-	Password string   // required，同时包括大小写、数字，长度不少于 8 位 不超过 20 位
-	UserType UserType // required, 枚举值
+	Nickname string   `form:"Nickname" json:"Nickname" validate:"required|string:4,20|alpha" binding:"required"`                      // required，不小于 4 位 不超过 20 位
+	Username string   `form:"Username" json:"Username" validate:"required|string:8,20" binding:"required"`                            // required，只支持大小写，长度不小于 8 位 不超过 20 位
+	Password string   `form:"Password" json:"Password" validate:"required|alphaNum|string:8,20|passwordValidator" binding:"required"` // required，同时包括大小写、数字，长度不少于 8 位 不超过 20 位
+	UserType UserType `form:"UserType" json:"UserType" validate:"required" binding:"required"`                                        // required, 枚举值
 }
 
 type CreateMemberResponse struct {
@@ -83,7 +82,7 @@ type CreateMemberResponse struct {
 // 获取成员信息
 
 type GetMemberRequest struct {
-	UserID string
+	UserID string `json:"UserID" form:"UserID" binding:"required"`
 }
 
 // 如果用户已删除请返回已删除状态码，不存在请返回不存在状态码
@@ -96,8 +95,8 @@ type GetMemberResponse struct {
 // 批量获取成员信息
 
 type GetMemberListRequest struct {
-	Offset int
-	Limit  int
+	Offset int `json:"Offset" form:"Offset" binding:"required"`
+	Limit  int `json:"Limit" form:"Limit" binding:"required"`
 }
 
 type GetMemberListResponse struct {
@@ -110,8 +109,8 @@ type GetMemberListResponse struct {
 // 更新成员信息
 
 type UpdateMemberRequest struct {
-	UserID   string
-	Nickname string
+	UserID   string `json:"UserID" form:"UserID" binding:"required"`
+	Nickname string `json:"Nickname" form:"Nickname" binding:"required"`
 }
 
 type UpdateMemberResponse struct {
@@ -122,7 +121,7 @@ type UpdateMemberResponse struct {
 // 成员删除后，该成员不能够被登录且不应该不可见，ID 不可复用
 
 type DeleteMemberRequest struct {
-	UserID string
+	UserID string `json:"UserID" form:"UserID" binding:"required"`
 }
 
 type DeleteMemberResponse struct {
@@ -133,8 +132,8 @@ type DeleteMemberResponse struct {
 // 登录
 
 type LoginRequest struct {
-	Username string
-	Password string
+	Username string `json:"Username" form:"Username" binding:"required"`
+	Password string `binding:"required" form:"Password" binding:"required"`
 }
 
 // 登录成功后需要 Set-Cookie("camp-session", ${value})
@@ -174,9 +173,10 @@ type WhoAmIResponse struct {
 
 // 创建课程
 // Method: Post
+
 type CreateCourseRequest struct {
-	Name string
-	Cap  int
+	Name string `form:"Name" json:"Name" binding:"required"`
+	Cap  int    `form:"Cap" json:"Cap" binding:"required"`
 }
 
 type CreateCourseResponse struct {
@@ -189,7 +189,7 @@ type CreateCourseResponse struct {
 // 获取课程
 // Method: Get
 type GetCourseRequest struct {
-	CourseID string
+	CourseID string `json:"CourseID" form:"CourseID" binding:"required"`
 }
 
 type GetCourseResponse struct {
@@ -202,8 +202,8 @@ type GetCourseResponse struct {
 // 注：这里的 teacherID 不需要做已落库校验
 // 一个老师可以绑定多个课程 , 不过，一个课程只能绑定在一个老师下面
 type BindCourseRequest struct {
-	CourseID  string
-	TeacherID string
+	CourseID  string `json:"CourseID" form:"CourseID" binding:"required"`
+	TeacherID string `json:"TeacherID" form:"TeacherID" binding:"required"`
 }
 
 type BindCourseResponse struct {
@@ -213,8 +213,8 @@ type BindCourseResponse struct {
 // 老师解绑课程
 // Method： Post
 type UnbindCourseRequest struct {
-	CourseID  string
-	TeacherID string
+	CourseID  string `json:"CourseID" form:"CourseID" binding:"required"`
+	TeacherID string `json:"TeacherID" form:"TeacherID" binding:"required"`
 }
 
 type UnbindCourseResponse struct {
@@ -224,7 +224,7 @@ type UnbindCourseResponse struct {
 // 获取老师下所有课程
 // Method：Get
 type GetTeacherCourseRequest struct {
-	TeacherID string
+	TeacherID string `json:"TeacherID" form:"TeacherID" binding:"required"`
 }
 
 type GetTeacherCourseResponse struct {
@@ -237,17 +237,18 @@ type GetTeacherCourseResponse struct {
 // 排课求解器，使老师绑定课程的最优解， 老师有且只能绑定一个课程
 // Method： Post
 type ScheduleCourseRequest struct {
-	TeacherCourseRelationShip map[string][]string // key 为 teacherID , val 为老师期望绑定的课程 courseID 数组
+	// key 为 teacherID , val 为老师期望绑定的课程 courseID 数组
+	TeacherCourseRelationShip map[string][]string `json:"TeacherCourseRelationShip" form:"TeacherCourseRelationShip" binding:"required"`
 }
 
 type ScheduleCourseResponse struct {
 	Code ErrNo
-	Data map[string]string   // key 为 teacherID , val 为老师最终绑定的课程 courseID
+	Data map[string]string // key 为 teacherID , val 为老师最终绑定的课程 courseID
 }
 
 type BookCourseRequest struct {
-	StudentID string
-	CourseID  string
+	StudentID string `json:"StudentID" form:"StudentID" binding:"required"`
+	CourseID  string `json:"CourseID" form:"CourseID" binding:"required"`
 }
 
 // 课程已满返回 CourseNotAvailable
@@ -257,7 +258,7 @@ type BookCourseResponse struct {
 }
 
 type GetStudentCourseRequest struct {
-	StudentID string
+	StudentID string `json:"StudentID" form:"StudentID" binding:"required"`
 }
 
 type GetStudentCourseResponse struct {
