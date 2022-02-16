@@ -28,7 +28,6 @@ func init() {
 	// open connection
 	MySqlDb, MySqlError = gorm.Open("mysql", dbDSN)
 	// Enable Logger, show detailed log
-	MySqlDb.LogMode(true)
 
 	db := MySqlDb.DB()
 

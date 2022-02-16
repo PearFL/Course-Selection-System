@@ -2,6 +2,7 @@ package server
 
 import (
 	"course_select/src/config"
+	"course_select/src/database"
 	global "course_select/src/global"
 	"course_select/src/rabbitmq"
 	router "course_select/src/router"
@@ -13,13 +14,15 @@ import (
 )
 
 func Run(httpServer *gin.Engine) {
-
 	// 生成日志
-	logFile, _ := os.Create(config.GetLogPath())
-	gin.DefaultWriter = io.MultiWriter(logFile, os.Stdout, os.Stdin, os.Stderr)
+	//logFile, _ := os.Create(config.GetLogPath())
+	gin.DefaultWriter = io.MultiWriter(global.Logger.Writer(), os.Stdout, os.Stdin, os.Stderr)
 	// 设置日志格式
-	httpServer.Use(gin.LoggerWithFormatter(config.GetLogFormat))
+	httpServer.Use(gin.Logger())
 	httpServer.Use(gin.Recovery())
+	//输出gorm到日志
+	database.MySqlDb.LogMode(true)
+	database.MySqlDb.SetLogger(global.GormLogger{})
 
 	//设置session
 	gob.Register(global.TMember{})
