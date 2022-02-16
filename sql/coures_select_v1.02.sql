@@ -113,8 +113,8 @@ CREATE TABLE `member` (
 
 LOCK TABLES `member` WRITE;
 /*!40000 ALTER TABLE `member` DISABLE KEYS */;
-INSERT INTO `member` VALUES (null,'yeye','hulu','fdf44dd58209f4f21104e92b850886ae',2,0),(null,'Alice','Alice','25d55ad283aa400af464c76d713c07ad',3,0),(null,'JudgeAdmin','JudgeAdmin','3f83fdd7e989c398ea157c58e3241dcd',1,0),(null,'icu','ui','5967ee71b80c6e3761b5414fd5b22dd7',2,0),(null,'twt','twt','2ba38c72f45a830f2b8243a3a22236dd',2,0),(null,'wz','wz','36eed342177e32c235203aca93accde3',2,0),(null,'Tom','Tom','ddb14e5d1f19779c276e8d7b89ebd103',3,0),(null,'Bob','Bob','25d55ad283aa400af464c76d713c07ad',2,0),(null,'mxh','mxh','4c3e4195b649599434c7ee3f1ed0d8d9',2,0);
-INSERT INTO `member` VALUES (null,'xwytxdy','xwytxdyq','1q2w3e4R',2,0)
+/* JudgeAdmin JudgePassword2022*/
+INSERT INTO `member` VALUES (null,'JudgeAdmin','JudgeAdmin','3f83fdd7e989c398ea157c58e3241dcd',1,0);
 /*!40000 ALTER TABLE `member` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
