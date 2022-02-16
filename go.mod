@@ -9,6 +9,7 @@ require (
 	github.com/gookit/validate v1.2.11
 	github.com/jinzhu/gorm v1.9.16
 	github.com/satori/go.uuid v1.2.0
+	github.com/sirupsen/logrus v1.8.1
 	github.com/streadway/amqp v1.0.0
 	golang.org/x/time v0.0.0-20220210224613-90d013bbcef8
 	gopkg.in/ini.v1 v1.66.3
