@@ -21,7 +21,7 @@ func BindCourse(bind Bind) error {
 	//var db := database.MySqlDb.DB()
 	var member Member
 	err := db.First(&Member{}, "user_id = ?", bind.TeacherID).Scan(&member).Error
-	if err != nil || member.UserType != global.Teacher {
+	if err != nil || member.IsDeleted == true || member.UserType != global.Teacher {
 		return errors.New("TeacherNotExisted")
 	}
 
