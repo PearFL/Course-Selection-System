@@ -5,6 +5,7 @@ import (
 	global "course_select/src/global"
 	"course_select/src/model"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 )
 
@@ -20,6 +21,8 @@ func BookCourse(c *gin.Context) {
 		c.JSON(http.StatusOK, global.BookCourseResponse{Code: global.UnknownError})
 		return
 	}
+
+	log.Println(bookCourseRequest)
 
 	// 校验这是不是学生
 	if !model.IsStudentLegal(bookCourseRequest.StudentID, rc) {
@@ -77,6 +80,8 @@ func GetStudentCourse(c *gin.Context) {
 		c.JSON(http.StatusOK, global.GetStudentCourseResponse{Code: global.UnknownError})
 		return
 	}
+
+	log.Println(studentCourseRequest)
 
 	// 校验这是不是学生
 	if !model.IsStudentLegal(studentCourseRequest.StudentID, rc) {
