@@ -25,7 +25,6 @@ func Run(httpServer *gin.Engine) {
 	gob.Register(global.TMember{})
 	httpServer.Use(global.GetSession())
 
-	//建几个消息队列消费者
 	go func() {
 		rabbitmq.InitConsumer()
 		//TODO:

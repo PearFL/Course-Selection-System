@@ -5,8 +5,12 @@ import (
 	global "course_select/src/global"
 	"course_select/src/model"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
+	"sync"
 )
+
+var mutex sync.Mutex
 
 func BookCourse(c *gin.Context) {
 	rc := database.RedisClient.Get()
@@ -51,15 +55,18 @@ func BookCourse(c *gin.Context) {
 	// redis写库
 	model.UpdateStudentCourse(bookCourseRequest.StudentID, bookCourseRequest.CourseID, rc)
 
-	// 生产者生产消息
-	err := InitProducer(global.BookCourseRequest{
-		StudentID: bookCourseRequest.StudentID,
-		CourseID:  bookCourseRequest.CourseID,
-	})
-	if err != nil {
-		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.UnknownError})
-		return
-	}
+	go func() {
+		mutex.Lock()
+		err := InitProducer(global.BookCourseRequest{
+			StudentID: bookCourseRequest.StudentID,
+			CourseID:  bookCourseRequest.CourseID,
+		})
+		if err != nil {
+			log.Println("消息队列错误")
+			return
+		}
+		mutex.Unlock()
+	}()
 
 	c.JSON(http.StatusOK, global.BookCourseResponse{Code: global.OK})
 	return
