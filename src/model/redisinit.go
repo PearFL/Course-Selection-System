@@ -9,7 +9,7 @@ func init() {
 	rc := database.RedisClient.Get()
 	defer rc.Close()
 
-	rc.Flush()
+	rc.Do("FLUSHDB")
 
 	var courses []Course
 	db.Model(&Course{}).Find(&courses)

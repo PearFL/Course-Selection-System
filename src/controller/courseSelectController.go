@@ -5,19 +5,21 @@ import (
 	global "course_select/src/global"
 	"course_select/src/model"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/time/rate"
 	"log"
 	"net/http"
 	"sync"
+	"time"
 )
 
 var mutex = sync.Mutex{}
 
-// var limiter = rate.NewLimiter(1000, 3000)
+var limiter = rate.NewLimiter(3000, 1500)
 
 func BookCourse(c *gin.Context) {
-	// 十秒后再请求
-	// c.Set("Deadline", time.Now().Add(time.Second*10))
-	// limiter.Wait(c)
+	// 再请求
+	c.Set("Deadline", time.Now().Add(time.Millisecond*300))
+	limiter.Wait(c)
 
 	rc := database.RedisClient.Get()
 	defer rc.Close()
