@@ -25,10 +25,12 @@ func Run(httpServer *gin.Engine) {
 	gob.Register(global.TMember{})
 	httpServer.Use(global.GetSession())
 
-	go func() {
-		rabbitmq.InitConsumer()
-		//TODO:
-	}()
+	for i := 1; i <= 4; i++ {
+		go func() {
+			rabbitmq.InitConsumer()
+			//TODO:
+		}()
+	}
 
 	// 注册路由
 	router.RegisterRouter(httpServer)

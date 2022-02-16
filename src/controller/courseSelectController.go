@@ -33,6 +33,8 @@ func BookCourse(c *gin.Context) {
 		return
 	}
 
+	log.Println(bookCourseRequest)
+
 	// 校验这是不是学生
 	if !model.IsStudentLegal(bookCourseRequest.StudentID, rc) {
 		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.StudentNotExisted})

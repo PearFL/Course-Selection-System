@@ -29,5 +29,12 @@ func init() {
 	for _, v := range members {
 		rc.Do("SADD", "LegalStudentID", v.UserID)
 	}
+
+	var choices []Choice
+	db.Model(&Choice{}).Find(&choices)
+	for _, v := range choices {
+		UpdateStudentCourse(v.StudentID, v.CourseID, rc)
+	}
+
 	rc.Close()
 }
