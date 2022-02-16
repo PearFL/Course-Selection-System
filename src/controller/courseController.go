@@ -84,17 +84,19 @@ func BindCourse(c *gin.Context) {
 	atoi2, _ := strconv.Atoi(bindCourseRequest.CourseID)
 	bind := model.Bind{TeacherID: atoi1, CourseID: atoi2}
 	err := model.BindCourse(bind)
-	if err.Error() == "TeacherNotExisted" {
-		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.UserNotExisted})
-		return
-	}
-	if err.Error() == "CourseNotExisted" {
-		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.CourseNotExisted})
-		return
-	}
-	if err.Error() == "CourseHasBound" {
-		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.CourseHasBound})
-		return
+	if err != nil {
+		if err.Error() == "TeacherNotExisted" {
+			c.JSON(http.StatusOK, global.ResponseMeta{Code: global.UserNotExisted})
+			return
+		}
+		if err.Error() == "CourseNotExisted" {
+			c.JSON(http.StatusOK, global.ResponseMeta{Code: global.CourseNotExisted})
+			return
+		}
+		if err.Error() == "CourseHasBound" {
+			c.JSON(http.StatusOK, global.ResponseMeta{Code: global.CourseHasBound})
+			return
+		}
 	}
 
 	// 写redis

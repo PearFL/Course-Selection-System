@@ -19,4 +19,6 @@ func main() {
 	httpServer := gin.Default()
 	server.Run(httpServer)
 
+	// test.Test()
+
 }

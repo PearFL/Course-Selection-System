@@ -25,6 +25,8 @@ func BookCourse(c *gin.Context) {
 		return
 	}
 
+	log.Println(bookCourseRequest)
+
 	// 校验这是不是学生
 	if !model.IsStudentLegal(bookCourseRequest.StudentID, rc) {
 		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.StudentNotExisted})
@@ -84,6 +86,8 @@ func GetStudentCourse(c *gin.Context) {
 		c.JSON(http.StatusOK, global.GetStudentCourseResponse{Code: global.UnknownError})
 		return
 	}
+
+	log.Println(studentCourseRequest)
 
 	// 校验这是不是学生
 	if !model.IsStudentLegal(studentCourseRequest.StudentID, rc) {

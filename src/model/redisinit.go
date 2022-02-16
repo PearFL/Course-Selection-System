@@ -25,7 +25,7 @@ func init() {
 	}
 
 	var members []Member
-	db.Model(&Member{}).Where("user_type = ? and is_deleted = ?", "3", "0").Find(&members)
+	db.Model(&Member{}).Where("user_type = ? and is_deleted = ?", "2", "0").Find(&members)
 	for _, v := range members {
 		rc.Do("SADD", "LegalStudentID", v.UserID)
 	}
