@@ -81,7 +81,7 @@ func GetRedisConfig() *RedisInfo {
 func GetLogPath() string {
 	timeObj := time.Now()
 	datetime := timeObj.Format("2006-01-02-15-04-05")
-	return "logfile/Course_Select" + datetime + ".log"
+	return "log/Course_Select" + datetime + ".log"
 }
 
 func GetLogFormat(param gin.LogFormatterParams) string {
