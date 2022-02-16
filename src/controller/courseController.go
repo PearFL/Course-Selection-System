@@ -19,6 +19,8 @@ func CreateCourse(c *gin.Context) {
 		return
 	}
 
+	log.Println(request)
+
 	requestMap := global.Struct2Map(request)
 	courseValidate := validate.CourseValidate
 	res, _ := courseValidate.ValidateMap(requestMap, "add")
@@ -70,6 +72,8 @@ func BindCourse(c *gin.Context) {
 		return
 	}
 
+	log.Println(bindCourseRequest)
+
 	requestMap := global.Struct2Map(bindCourseRequest)
 	courseValidate := validate.CourseValidate
 	res, _ := courseValidate.ValidateMap(requestMap, "bind")
@@ -113,6 +117,8 @@ func UnbindCourse(c *gin.Context) {
 		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.UnknownError})
 		return
 	}
+
+	log.Println(unbindCourseRequest)
 
 	requestMap := global.Struct2Map(unbindCourseRequest)
 	courseValidate := validate.CourseValidate
@@ -159,6 +165,8 @@ func GetTeacherCourse(c *gin.Context) {
 		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.UnknownError})
 		return
 	}
+
+	log.Println(getTeacherCourseRequest)
 
 	requestMap := global.Struct2Map(getTeacherCourseRequest)
 	courseValidate := validate.CourseValidate
