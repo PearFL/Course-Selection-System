@@ -7,10 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
-	"sync"
 )
-
-var mutex sync.Mutex
 
 func BookCourse(c *gin.Context) {
 	rc := database.RedisClient.Get()
@@ -24,8 +21,6 @@ func BookCourse(c *gin.Context) {
 		c.JSON(http.StatusOK, global.BookCourseResponse{Code: global.UnknownError})
 		return
 	}
-
-	log.Println(bookCourseRequest)
 
 	// 校验这是不是学生
 	if !model.IsStudentLegal(bookCourseRequest.StudentID, rc) {
@@ -58,7 +53,6 @@ func BookCourse(c *gin.Context) {
 	model.UpdateStudentCourse(bookCourseRequest.StudentID, bookCourseRequest.CourseID, rc)
 
 	go func() {
-		mutex.Lock()
 		err := InitProducer(global.BookCourseRequest{
 			StudentID: bookCourseRequest.StudentID,
 			CourseID:  bookCourseRequest.CourseID,
@@ -67,7 +61,6 @@ func BookCourse(c *gin.Context) {
 			log.Println("消息队列错误")
 			return
 		}
-		mutex.Unlock()
 	}()
 
 	c.JSON(http.StatusOK, global.BookCourseResponse{Code: global.OK})
