@@ -39,6 +39,18 @@ func BindCourse(bind Bind) error {
 }
 
 func UnBindCourse(unbind Bind) error {
+	var member Member
+	err := db.First(&Member{}, "user_id = ?", unbind.TeacherID).Scan(&member).Error
+	if err != nil || member.IsDeleted == true || member.UserType != global.Teacher {
+		return errors.New("TeacherNotExisted")
+	}
+
+	var course Course
+	err = db.Model(&Course{}).Where("course_id = ?", unbind.CourseID).First(&course).Error
+	if err != nil {
+		return errors.New("CourseNotExisted")
+	}
+
 	result := db.Delete(&unbind)
 	if result.RowsAffected == 0 {
 		return errors.New("CourseNotBind")
