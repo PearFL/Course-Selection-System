@@ -23,6 +23,8 @@ func CreateMember(c *gin.Context) {
 		return
 	}
 
+	log.Println(createMemberRequest)
+
 	requestMap := global.Struct2Map(createMemberRequest)
 	memberValidate := validate.MemberValidate
 	res, _ := memberValidate.ValidateMap(requestMap, "add")
@@ -74,7 +76,7 @@ func GetMember(c *gin.Context) {
 	//requestMap := global.Struct2Map(getMemberRequest)
 	//fmt.Println(requestMap)
 
-	//log.Println(getMemberRequest)
+	log.Println(getMemberRequest)
 
 	result, err := memberModel.GetMember(getMemberRequest.UserID)
 	if err != nil {
@@ -102,6 +104,8 @@ func GetMemberList(c *gin.Context) {
 		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.UnknownError})
 		return
 	}
+
+	log.Println(GetMemberListRequest)
 
 	offset, limit := GetMemberListRequest.Offset, GetMemberListRequest.Limit
 
@@ -136,6 +140,8 @@ func UpdateMember(c *gin.Context) {
 		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.UnknownError})
 		return
 	}
+
+	log.Println(updateMemberRequest)
 
 	requestMap := global.Struct2Map(updateMemberRequest)
 	memberValidate := validate.MemberValidate
