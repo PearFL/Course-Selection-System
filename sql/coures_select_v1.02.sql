@@ -26,7 +26,7 @@ DROP TABLE IF EXISTS `bind`;
 /*!50503 SET character_set_client = utf8 */;
 CREATE TABLE `bind` (
                         `teacher_id` int NOT NULL,
-                        `course_id` int NOT NULL,
+                        `course_id` int NOT NULL UNIQUE,
                         PRIMARY KEY (`teacher_id`,`course_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
