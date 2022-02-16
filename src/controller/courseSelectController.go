@@ -14,11 +14,11 @@ import (
 
 var mutex = sync.Mutex{}
 
-var limiter = rate.NewLimiter(3000, 1500)
+var limiter = rate.NewLimiter(3000, 5000)
+var waitTime = time.Millisecond * 350
 
 func BookCourse(c *gin.Context) {
-	// 再请求
-	c.Set("Deadline", time.Now().Add(time.Millisecond*300))
+	c.Set("Deadline", time.Now().Add(waitTime))
 	limiter.Wait(c)
 
 	rc := database.RedisClient.Get()
@@ -83,6 +83,9 @@ func BookCourse(c *gin.Context) {
 }
 
 func GetStudentCourse(c *gin.Context) {
+	c.Set("Deadline", time.Now().Add(waitTime))
+	limiter.Wait(c)
+
 	rc := database.RedisClient.Get()
 	defer rc.Close()
 
