@@ -7,9 +7,18 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"sync"
 )
 
+var mutex = sync.Mutex{}
+
+// var limiter = rate.NewLimiter(1000, 3000)
+
 func BookCourse(c *gin.Context) {
+	// 十秒后再请求
+	// c.Set("Deadline", time.Now().Add(time.Second*10))
+	// limiter.Wait(c)
+
 	rc := database.RedisClient.Get()
 	defer rc.Close()
 
@@ -53,10 +62,12 @@ func BookCourse(c *gin.Context) {
 	model.UpdateStudentCourse(bookCourseRequest.StudentID, bookCourseRequest.CourseID, rc)
 
 	go func() {
+		mutex.Lock()
 		err := InitProducer(global.BookCourseRequest{
 			StudentID: bookCourseRequest.StudentID,
 			CourseID:  bookCourseRequest.CourseID,
 		})
+		mutex.Unlock()
 		if err != nil {
 			log.Println("消息队列错误")
 			return

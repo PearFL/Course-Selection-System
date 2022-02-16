@@ -3,7 +3,6 @@ package types
 import (
 	"course_select/src/controller"
 	global "course_select/src/global"
-
 	"github.com/gin-gonic/gin"
 )
 
