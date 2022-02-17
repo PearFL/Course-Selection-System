@@ -145,7 +145,7 @@ func UnbindCourse(c *gin.Context) {
 	// 写redis
 	rc := database.RedisClient.Get()
 	defer rc.Close()
-	model.TeacherUnbindCourse(unbindCourseRequest.TeacherID, rc)
+	model.TeacherUnbindCourse(unbindCourseRequest.CourseID, rc)
 
 	c.JSON(http.StatusOK, global.UnbindCourseResponse{Code: global.OK})
 

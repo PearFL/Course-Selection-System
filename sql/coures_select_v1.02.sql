@@ -85,7 +85,7 @@ CREATE TABLE `course` (
 
 LOCK TABLES `course` WRITE;
 /*!40000 ALTER TABLE `course` DISABLE KEYS */;
-INSERT INTO `course` VALUES (null,'线性代数',20,0),(null,'高等数学',30,0),(null,'低等数学',30,0),(null,'复变函数',120,0),(null,'信号系统',20,0),(null,'中等数学',20,0);
+INSERT INTO `course` VALUES (null,'线性代数',2,0),(null,'高等数学',30,0),(null,'低等数学',30,0),(null,'复变函数',120,0),(null,'信号系统',20,0),(null,'中等数学',20,0);
 /*!40000 ALTER TABLE `course` ENABLE KEYS */;
 UNLOCK TABLES;
 

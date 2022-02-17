@@ -29,9 +29,19 @@ func Test() {
 		}
 	}
 
+	for i := 5000; i < 6000; i++ {
+		memberModel := model.Member{Username: strconv.Itoa(i), Nickname: "xwytxdy",
+			UserType: 3, Password: utils.Md5Encrypt("xwytxdy")}
+		_, err := memberModel.CreateMember()
+
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
+
 	database.MySqlDb.Where("1 = 1").Delete(model.Course{})
 
-	for i := 0; i < 60; i++ {
+	for i := 0; i < 200; i++ {
 		courseModel := model.Course{Name: strconv.Itoa(i), Capacity: 500}
 		_, err := courseModel.CreateCourse()
 
